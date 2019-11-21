@@ -1,0 +1,54 @@
+화면단 EL & JSTL 사용(<%%> 스크립트릿 사용금지...)
+
+ActionForword isRedirect 삭제
+
+controller 하나생성, 기능 별로 서비스 생성
+
+servlet 에서 cmd 안쓰고 URI로 요청 판별
+비동기도 controller에서 판별해 service 로 이동해서 사용(별도의 출력 jsp 생성)
+
+한글처리는 filter
+DB연결 Connection Pool 사용 (Helper, DB_Close.java 생성되어있음)
+	오라클 DB서버 사용 192.168.0.149
+
+redirect 사용 (board_msg, board_url)
+
+관리자 로그인 여부에 따라, top, left 메뉴 변경
+
+DB data와 연결되는 data의 변수명은 db와 동일하게 사용.
+--------------------------------------------
+EMP
+--------------------------------------------
+1. 조회기능 (EMP 데이터 조회)
+
+1.1 사원번호 조회 / 1.2 부서번호 조회
+	1.1, 1.2 비동기로 데이터
+	select Tag change 이벤시  데이터 비동기 조회
+-------------------------------------------
+2. 사원등록 기능 
+-------------------------------------------
+3. 사원수정 기능
+-------------------------------------------
+4. 사원삭제 기능
+-------------------------------------------
+6. 관리자 기능  (session 처리 : login - logout)
+	관리자만 로그인 가능
+//관리자 로그인 리스트 테이블을 만듭니다  
+create table adminlist(
+userid varchar2(20) not null,
+pwd varchar2(20) not null
+);
+
+//관리자를 입력
+insert into adminlist values('admin', '1004');
+insert into adminlist values('adminkim', '1234');
+
+---------------------------------------------------
+chart 기능 비동기 select Tag change
+(업무 , 직종 통계 , 급여 , 사원수 .....)
+---------------------------------------------------
+예제)
+WebServlet_9_memo_mvc_url_Interface
+
+가지는 package 구조 : Model2 기반 MVC
+Webcontent 구조 

@@ -1,0 +1,52 @@
+WebContent - index.jsp  : 메인
+
+		   - WEB-INF	: 보안폴더		   
+		   			- chartAjax : 비동기 처리시 data 받는 page
+		   				
+		   				
+					- common : include 되는 page
+						- admin.jsp : 관리자가 아니면 화면에 접근 불가
+						- member.jsp : 회원이 아니면 화면에 접근 불가
+						- top.jsp : 상단
+						- bottom.jsp : 바닥
+						
+					- lib : 라이브러리
+						JSTL, DB, Json, smtp
+						
+					- views : UI 페이지
+						- 
+					
+					- process : 처리하는 jsp
+						- redirect.jsp : 화면이동처리
+						- UsingConnection.jsp : DB연결 확인페이지
+
+---------------------------------------------------------------------------------------------
+Java Resources
+	src
+		kr.or.bit.action
+			Action.java : 인터페이스 : service에서 구현
+			ActionForward.java : 이동path 를 저장할 객체
+		
+		kr.or.bit.controller
+			FrontController.java : URI 방식으로 요청을 파악해 service 호출
+		
+		kr.or.bit.dao
+			Memberdao.java : 회원 DB처리
+			
+		kr.or.bit.dto
+			Member.java : 회원 데이터를 담을 객체
+			
+		kr.or.bit.filter
+			EncodingFilter.java : 한글화 filter
+
+		kr.or.bit.service
+			Login.java : Login 처리
+			Logout.java : Logout 처리
+			
+			Join.java : 회원 가입 처리
+			
+			
+		kr.or.bit.utils
+			ConnectionHelper.java : Connection pool
+			DB_Close.java : DB사용자원 close
+			
