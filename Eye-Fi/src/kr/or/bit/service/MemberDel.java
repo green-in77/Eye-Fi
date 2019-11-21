@@ -7,7 +7,7 @@ import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.dao.MemberDao;
 
-public class IdCheck implements Action {
+public class MemberDel implements Action{
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
@@ -19,15 +19,11 @@ public class IdCheck implements Action {
 		
 		//3. 처리
 		MemberDao memberdao = new MemberDao();
-		String result = memberdao.idCheck(userid);
+		memberdao.memberDel(userid);
 		
-		//4. 저장
-		request.setAttribute("result", result);
-		
-		//5. 이동경로 설정
 		ActionForward forward = new ActionForward();
-		forward.setPath("/WEB-INF/memberAjaxJsp/idCheck.jsp");
-		
+		forward.setPath("logout.do");
 		return forward;
 	}
+
 }

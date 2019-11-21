@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 
 <%	//관리자 1 , 일반회원 0
-	if(session.getAttribute("admin").equals("0")){ //관리자 여부가 0이면(일반회원)
+	if(session.getAttribute("admin") == null || session.getAttribute("admin").equals("0") || session.getAttribute("userid") == null){ //관리자 여부가 0이면(일반회원)
 		//강제로 페이지 이동
 		//response.sendRedirect("index.jsp");
 		out.print("<script>");

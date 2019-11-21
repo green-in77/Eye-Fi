@@ -8,37 +8,33 @@ import kr.or.bit.action.ActionForward;
 import kr.or.bit.dao.MemberDao;
 import kr.or.bit.dto.Member;
 
-public class MemberEditOK implements Action {
+public class AdminMemberEditOk implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
-		//1. 값 받기
+		//1. 데이터 받기
 		String userid = request.getParameter("userid");
 		String userpw = request.getParameter("userpw");
-				
-		//2. 값 확인
-		//System.out.println(userid+"/"+userpw);
+		String email = request.getParameter("email");
+		int admin = Integer.parseInt(request.getParameter("admin"));
+		int code = Integer.parseInt(request.getParameter("code"));
+		
+		//2. 데이터 확인
+		//System.out.println(userid+"/"+userpw+"/"+email+"/"+admin+"/"+code);
 		
 		//3. 처리
 		Member member = new Member();
 		member.setUserid(userid);
 		member.setUserpw(userpw);
+		member.setEmail(email);
+		member.setAdmin(admin);
+		member.setCode(code);
 		
 		MemberDao memberdao = new MemberDao();
-		int row = memberdao.edit(member);
-		String result = "";
-		
-		if(row > 0 ) {
-			result = "true";
-		}else {
-			result = "false";
-		}
-
-		request.setAttribute("result", result);
+		memberdao.adminMemberEdit(member);
 		
 		ActionForward forward = new ActionForward();
-		forward.setPath("/WEB-INF/memberAjaxJsp/memberEdit.jsp");
-		
+		forward.setPath("/WEB-INF/views/memberList.jsp");
 		return forward;
 	}
 

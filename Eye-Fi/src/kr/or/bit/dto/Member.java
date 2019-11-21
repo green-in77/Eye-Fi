@@ -6,7 +6,7 @@ public class Member { //회원정보를 담을 DTO
 	private String userpw; /* 비밀번호 */
 	private String email; /* 이메일 */
 	private	int admin; /* 관리자 */ //관리자 1 , 일반회원 0 
-	private int code; /* 코드 */
+	private int code; /* 코드 */ //활동 1, 정지 2, 탈퇴 3
 	
 	//active 테이블
 	private String status; /* 회원상태*/ // 활동 1, 정지 2, 탈퇴 3

@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.or.bit.dto.Active;
 import kr.or.bit.dto.Member;
 import kr.or.bit.utils.ConnectionHelper;
 import kr.or.bit.utils.DB_Close;
@@ -88,10 +89,10 @@ public class MemberDao {
 		Member member = null;
 		
 		try {
-			String sql_login = "select userid, admin, code from member where userid=? and userpw=?";
+			String sql_login = "select userid, email, admin, code from member where userid=? and userpw=?";
 			pstmt = conn.prepareStatement(sql_login);
 			
-			System.out.println(userid + "/" + userpw);
+			//System.out.println(userid + "/" + userpw);
 			pstmt.setString(1, userid);
 			pstmt.setString(2, userpw);
 			rs = pstmt.executeQuery();
@@ -99,6 +100,7 @@ public class MemberDao {
 			if(rs.next()) { // ID와 PW가 모두 맞았다
 				member = new Member();
 				member.setUserid(rs.getString("userid"));
+				member.setEmail(rs.getString("email"));
 				member.setAdmin(rs.getInt("admin"));
 				member.setCode(rs.getInt("code"));
 			}
@@ -220,5 +222,144 @@ public class MemberDao {
 			DB_Close.close(conn);
 		}
 		return memberList;
+	}
+	
+	//총 회원수 조회
+	public int memberTotalCount() {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int totalcount = 0;
+		
+		try {
+			String sql_count = "select count(userid) from member";
+			pstmt = conn.prepareStatement(sql_count);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				totalcount = rs.getInt(1);
+			}
+		} catch(Exception e) {
+			System.out.println("membetTotalCount : " + e.getMessage());
+		} finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(rs);
+			DB_Close.close(conn);
+		}
+		return totalcount;
+	}
+	
+	//id 조회
+	public List<Member> memberSelectId(String userid) {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Member> memberList = new ArrayList<Member>();
+		
+		try {
+			String sql_id = "select m.userid, m.userpw, m.email, m.admin, m.code, a.STATUS from member m join active a on m.CODE = a.CODE where m.userid like ?";
+			pstmt = conn.prepareStatement(sql_id);
+			
+			pstmt.setString(1, "%" + userid + "%");
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Member member = new Member();
+				member.setUserid(rs.getString("userid"));
+				member.setUserpw(rs.getString("userpw"));
+				member.setEmail(rs.getString("email"));
+				member.setAdmin(rs.getInt("admin"));
+				member.setCode(rs.getInt("code"));
+				member.setStatus(rs.getString("status"));
+				
+				memberList.add(member);
+			}
+		} catch (Exception e) {
+			System.out.println("ID 조회 : " + e.getMessage());
+		} finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(rs);
+			DB_Close.close(conn);
+		}
+		return memberList;
+	}
+	
+	//활성화 코드 조회
+	public List<Active> code() {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Active> codeList = new ArrayList<Active>();
+
+		try {
+			String sql_code = "select code, status from ACTIVE";
+			pstmt = conn.prepareStatement(sql_code);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Active code = new Active();
+				code.setCode(rs.getInt("code"));
+				code.setStatus(rs.getString("status"));
+				
+				codeList.add(code);
+			}
+			
+		} catch(Exception e) {
+			System.out.println("avtice : " + e.getMessage());
+		} finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(rs);
+			DB_Close.close(conn);
+		}
+		return codeList;
+	}
+	
+	//관리자 정보수정
+	public int adminMemberEdit(Member member) {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		try {
+			String sql_edit = "update member set userpw=?, email=?, admin=?, code=? where userid=?";
+			pstmt = conn.prepareStatement(sql_edit);
+				
+			pstmt.setString(1, member.getUserpw());
+			pstmt.setString(2, member.getEmail());
+			pstmt.setInt(3, member.getAdmin());
+			pstmt.setInt(4, member.getCode());
+			pstmt.setString(5, member.getUserid());
+			
+			result = pstmt.executeUpdate();
+			
+		}catch(Exception e) {
+			System.out.println("adminupdate : " + e.getMessage());
+		}finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(conn);
+		}
+		return result;
+	}
+	
+	//회원 탈퇴
+	public int memberDel(String userid) {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		int result = 0;
+		
+		try {
+			String sql_edit = "update member set code=3 where userid=?";
+			pstmt = conn.prepareStatement(sql_edit);
+			
+			pstmt.setString(1, userid);
+			result = pstmt.executeUpdate();
+			
+		}catch(Exception e) {
+			System.out.println("memberDel : " + e.getMessage());
+		}finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(conn);
+		}
+		return result;
 	}
 }

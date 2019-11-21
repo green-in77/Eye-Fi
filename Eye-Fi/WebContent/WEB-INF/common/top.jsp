@@ -24,7 +24,7 @@
     <![endif]-->
     
     <!-- CORE JQUERY SCRIPTS -->
-    <script src="assets/js/jquery-1.11.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script src="assets/js/bootstrap.js"></script>
     
@@ -126,7 +126,86 @@
 				console.log(issubmit);
 				
 				return issubmit;
-			});//이벤트 끝			
+			});//이벤트 끝
+			
+			
+//------------정보수정창 모달---------------------------------------------------------------------------------------------
+			//pw 유효성체크
+			$('#userpwEdit').keyup(function() {
+				//console.log($(this).val());
+				if (pw_pattern.test($(this).val()) != true){
+					$('#pwcheckEdit').text("비밀번호가 조건에 일치하지 않습니다.");
+				}else {
+					$('#pwcheckEdit').text("사용가능한 비밀번호 입니다..");
+					pw_check = true;
+				}
+			});//이벤트 끝
+			
+			//pw재입력 체크
+			$('#userpwCkEdit').keyup(function() {
+				if($('#userpwEdit').val() != $('#userpwCkEdit').val()){
+					$('#pwckcheckEdit').text("비밀번호가 일치하지 않습니다.");
+				}else {
+					$('#pwckcheckEdit').text("비밀번호가 확인되었습니다.");
+					pwck_check = true;
+				}
+			});//이벤트 끝
+			
+			
+			//전송
+			$('#submitEdit').click(function() {
+
+				let issubmit = pw_check && pwck_check;
+				//console.log(issubmit);
+				
+				if(issubmit) {
+					var url = $('#editForm').attr('action');
+					var data = {
+							"userid" : $('#useridEdit').val(),
+							"userpw" : $('#userpwEdit').val()
+						};
+					
+					$.ajax({
+						url : url,
+						data : data,
+						type : "POST",
+						dataType: "text",
+						success: function(data){
+							console.log(data.trim());
+							if(data.trim() == "true"){
+								alert("수정이 완료되었습니다.");
+							}else {
+								alert("수정이 실패했습니다.");
+							}
+							window.location.href = "${pageContext.request.contextPath}/index.jsp";
+						},
+						error : function(xhr){
+							console.log(xhr.status);
+						}
+					});
+					
+				}else {
+					return false;
+					alert("입력이 완료되지 않았습니다.");
+				}
+				return false;
+			});//이벤트 끝
+
+//----------회원탈퇴--------------------------------------------------------------------------------------------------------
+			$('#submitDel').click(function() {
+				$.ajax({
+					url : "memberDel.do",
+					data : {"userid" : '${sessionScope.userid}'},
+					type : "POST",
+					success: function(){
+						window.location.href = "${pageContext.request.contextPath}/index.jsp";
+					},
+					error : function(xhr){
+						console.log(xhr.status);
+					}
+				});
+			});//이벤트 끝
+			
 		});
 	</script>
 </head>
@@ -151,7 +230,7 @@
 	            <div class="left-div">
 	                <div class="user-settings-wrapper" style="text-align: right;">
 	                	<ul class="nav">
-	                		<li class="dropdown">
+	                		<li class="dropdown-toggle">
 			                	<img src="assets/img/member.jpg" alt="member" class="img-rounded" data-toggle="dropdown" aria-expanded="false"/>
 			                	<div class="dropdown-menu dropdown-settings">
 									<div class="media">
@@ -163,8 +242,10 @@
 										</div>
 									</div>
 									<hr>
-									<a href = "memberEdit.do?userid=${sessionScope.userid}" data-toggle="modal" data-target="#edit">
-									<button class="btn btn-primary" id="memberEdit" ><i class="fa fa-edit"></i>정보수정</button></a>
+									<a data-toggle="modal" data-target="#edit">
+									<button class="btn btn-primary" id="memberEdit"><i class="fa fa-edit"></i>정보수정</button></a>
+									<a data-toggle="modal" data-target="#del">
+									<button class="btn btn-primary" id="memberDel"><i class="fa fa-eraser"></i>회원탈퇴</button></a>
 								</div>
 							</li>
 	                    </ul>
@@ -292,7 +373,62 @@
 	<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
 		<div class="modal-dialog2">
 			<div class="modal-content">
-			
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title" id="myModalLabel">정보수정</h4>
+				</div>
+				<form role="form" id="editForm" name="editForm" action="memberEditOk.do" method="post">
+					<div class="modal-body">
+							<c:set var="member" value="${sessionScope.member}"></c:set>
+							<div class="form-group">
+								<label class="control-label" for="userid">아이디</label>
+								<input type="text" class="form-control" id="useridEdit" name="userid" value='${member.userid}' readonly/>
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label" for="userpw">비밀번호</label>
+								<input type="password" class="form-control" id="userpwEdit" name="userpw"/>
+								<small id="pwcheckEdit">비밀번호는 4자~10자 입니다.</small>
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label" for="userpwCk">비밀번호 확인</label>
+								<input type="password" class="form-control" id="userpwCkEdit" />
+								<small id="pwckcheckEdit">비밀번호를 다시한번 입력해주세요.</small>
+							</div>
+							
+							<div class="form-group">
+								<label class="control-label" for="email">이메일</label>
+								<input type="text" class="form-control" id="emailEdit" name="email" value='${member.email}' readonly />
+							</div>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-primary" id="submitEdit">정보수정</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 회원탈퇴  -->
+    <div class="modal fade" id="del" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+		<div class="modal-dialog1">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title" id="myModalLabel">회원탈퇴</h4>
+				</div>
+				<form role="form" id="loginForm" action="login.do" method="post">
+					<div class="modal-body">
+						정말 탈퇴하시겠습니까?
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-primary" id="submitDel">탈퇴</button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

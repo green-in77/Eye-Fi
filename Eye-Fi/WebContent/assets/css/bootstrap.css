@@ -2238,12 +2238,11 @@ caption {
   text-align: left;
 }
 th {
-  text-align: left;
+  text-align: center;
 }
 .table {
   width: 100%;
   max-width: 100%;
-  margin-bottom: 20px;
 }
 .table > thead > tr > th,
 .table > tbody > tr > th,
@@ -2253,7 +2252,6 @@ th {
 .table > tfoot > tr > td {
   padding: 8px;
   line-height: 1.42857143;
-  vertical-align: top;
   border-top: 1px solid #ddd;
 }
 .table > thead > tr > th {
@@ -2544,6 +2542,9 @@ output {
   -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
           transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+.form-align{
+	text-align: center;
 }
 
 .form-control:focus {

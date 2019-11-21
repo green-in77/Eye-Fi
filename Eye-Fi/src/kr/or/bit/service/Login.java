@@ -38,6 +38,8 @@ public class Login implements Action{
 				session.setAttribute("userid", userid);
 				session.setAttribute("admin", member.getAdmin());
 				
+				session.setAttribute("member", member);
+				
 			}else if(member.getCode() == 2) {// 2 : 정지
 				msg = "정지된 아이디입니다. 관리자에게 문의바랍니다.";
 				

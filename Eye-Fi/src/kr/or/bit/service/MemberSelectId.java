@@ -11,27 +11,28 @@ import kr.or.bit.dao.MemberDao;
 import kr.or.bit.dto.Member;
 import net.sf.json.JSONArray;
 
-public class MemberListOk implements Action {
+public class MemberSelectId implements Action{
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
-		String cp = request.getParameter("cp");
+		//1. 데이터 받기
+		String userid = request.getParameter("userid");
 		
-		if(cp == null || cp.trim().equals("") || cp.equals("null")){
-			//default 값 설정
-			cp = "1";
-		}
+		//2. 데이터 확인
+		//System.out.println(userid);
 		
+		//3. 처리
 		MemberDao memberdao = new MemberDao();
-		List<Member> memberList = memberdao.selectAll(Integer.parseInt(cp));
+		List<Member> memberList = memberdao.memberSelectId(userid);
 		
 		JSONArray memberListJson = JSONArray.fromObject(memberList);
 		
-		request.setAttribute("memberList", memberListJson);
-				
-		ActionForward forward = new ActionForward();
-		forward.setPath("/WEB-INF/memberAjaxJsp/memberList.jsp");
+		//4. 저장
+		request.setAttribute("memberlist", memberListJson);
 		
+		//5. 이동경로설정
+		ActionForward forward = new ActionForward();
+		forward.setPath("/WEB-INF/memberAjaxJsp/memberSelectId.jsp");
 		return forward;
 	}
 
