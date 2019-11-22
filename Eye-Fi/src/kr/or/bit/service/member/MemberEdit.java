@@ -1,4 +1,4 @@
-package kr.or.bit.service;
+package kr.or.bit.service.member;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -6,8 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.dao.MemberDao;
+import kr.or.bit.dto.member.Member;
 
-public class IdCheck implements Action {
+//회원 본인정보 수정 : 모달
+public class MemberEdit implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
@@ -17,17 +19,18 @@ public class IdCheck implements Action {
 		//2. 데이터 확인
 		//System.out.println(userid);
 		
-		//3. 처리
+		//3. 처리하기
 		MemberDao memberdao = new MemberDao();
-		String result = memberdao.idCheck(userid);
+		Member member = memberdao.select(userid);
 		
-		//4. 저장
-		request.setAttribute("result", result);
+		//4. 저장하기
+		request.setAttribute("member", member);
 		
-		//5. 이동경로 설정
+		//5. 페이지 설정
 		ActionForward forward = new ActionForward();
-		forward.setPath("/WEB-INF/memberAjaxJsp/idCheck.jsp");
+		forward.setPath("/WEB-INF/views/memberEditModal.jsp");
 		
 		return forward;
 	}
+
 }

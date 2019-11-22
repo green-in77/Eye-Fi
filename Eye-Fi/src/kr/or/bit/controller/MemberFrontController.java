@@ -11,19 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
-import kr.or.bit.service.AdminMemberEditOk;
-import kr.or.bit.service.Code;
-import kr.or.bit.service.EmailCheck;
-import kr.or.bit.service.IdCheck;
-import kr.or.bit.service.Join;
-import kr.or.bit.service.Login;
-import kr.or.bit.service.Logout;
-import kr.or.bit.service.MemberDel;
-import kr.or.bit.service.MemberEdit;
-import kr.or.bit.service.MemberEditOK;
-import kr.or.bit.service.MemberListOk;
-import kr.or.bit.service.MemberSelectId;
-import kr.or.bit.service.MemberTotalCount;
+import kr.or.bit.service.member.AdminMemberEditOk;
+import kr.or.bit.service.member.Code;
+import kr.or.bit.service.member.EmailCheck;
+import kr.or.bit.service.member.IdCheck;
+import kr.or.bit.service.member.Join;
+import kr.or.bit.service.member.Login;
+import kr.or.bit.service.member.Logout;
+import kr.or.bit.service.member.MemberDel;
+import kr.or.bit.service.member.MemberEdit;
+import kr.or.bit.service.member.MemberEditOK;
+import kr.or.bit.service.member.MemberListOk;
+import kr.or.bit.service.member.MemberSelectId;
+import kr.or.bit.service.member.MemberTotalCount;
 
 @WebServlet("*.do")
 public class MemberFrontController extends HttpServlet {

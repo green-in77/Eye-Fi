@@ -1,6 +1,4 @@
-package kr.or.bit.service;
-
-import java.util.List;
+package kr.or.bit.service.member;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,10 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.dao.MemberDao;
-import kr.or.bit.dto.Member;
-import net.sf.json.JSONArray;
 
-public class MemberSelectId implements Action{
+public class IdCheck implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
@@ -23,17 +19,15 @@ public class MemberSelectId implements Action{
 		
 		//3. 처리
 		MemberDao memberdao = new MemberDao();
-		List<Member> memberList = memberdao.memberSelectId(userid);
-		
-		JSONArray memberListJson = JSONArray.fromObject(memberList);
+		String result = memberdao.idCheck(userid);
 		
 		//4. 저장
-		request.setAttribute("memberlist", memberListJson);
+		request.setAttribute("result", result);
 		
-		//5. 이동경로설정
+		//5. 이동경로 설정
 		ActionForward forward = new ActionForward();
-		forward.setPath("/WEB-INF/memberAjaxJsp/memberSelectId.jsp");
+		forward.setPath("/WEB-INF/memberAjaxJsp/idCheck.jsp");
+		
 		return forward;
 	}
-
 }

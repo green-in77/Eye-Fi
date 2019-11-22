@@ -20,8 +20,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.or.bit.dto.Active;
-import kr.or.bit.dto.Member;
+import kr.or.bit.dto.member.Active;
+import kr.or.bit.dto.member.Member;
 import kr.or.bit.utils.ConnectionHelper;
 import kr.or.bit.utils.DB_Close;
 

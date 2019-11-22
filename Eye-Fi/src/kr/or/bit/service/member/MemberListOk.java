@@ -1,4 +1,4 @@
-package kr.or.bit.service;
+package kr.or.bit.service.member;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.dao.MemberDao;
-import kr.or.bit.dto.Member;
+import kr.or.bit.dto.member.Member;
 import net.sf.json.JSONArray;
 
 public class MemberListOk implements Action {

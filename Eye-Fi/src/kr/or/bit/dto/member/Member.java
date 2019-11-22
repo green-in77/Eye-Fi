@@ -1,4 +1,4 @@
-package kr.or.bit.dto;
+package kr.or.bit.dto.member;
 
 public class Member { //회원정보를 담을 DTO
 	//member 테이블

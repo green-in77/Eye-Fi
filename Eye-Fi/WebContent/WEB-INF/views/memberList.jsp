@@ -149,33 +149,30 @@
 					data:userid,
 					type: "POST",
 					dataType: "JSON",
-					success: function(memberList){
+					success: function(member){
 						//console.log(memberList);
 						var td = "";
-						
-						$.each(memberList, function(index, member){
-							var admin = (member.admin==1)?"관리자":"일반회원";
-							if(member != null) {
-								td += '<td><input type="text" class="form-control form-align" value="'+member.userid+'" readonly></td>'
-										+'<td><input type="text" class="form-control form-align" value="'+member.userpw+'"></td>'
-										+'<td><input type="text" class="form-control form-align" value="'+member.email+'"></td>'
-										+'<td>'
-											+'<select class="btn btn-primary">'
-												+'<option value="0">일반회원</option>'
-												+'<option value="1">관리자</option>'
-										+'</select></td>'
-										+'<td>'
-											+'<select class="btn btn-primary">';
-												//console.log(codelist);
-												td += codelist + '</select></td>'
-										+'<td><a class="editok btn btn-primary">완료</a></td>'
-										+'<td><a class="cancel btn btn-primary">취소</a></td>';
-											//console.log(td);
-							}else {
-								alert("잘못선택하셨습니다.");
-							}	
-						});//each 끝
-								
+						var admin = (member.admin==1)?"관리자":"일반회원";
+						if(member != null) {
+							td += '<td><input type="text" class="form-control form-align" value="'+member.userid+'" readonly></td>'
+									+'<td><input type="text" class="form-control form-align" value="'+member.userpw+'"></td>'
+									+'<td><input type="text" class="form-control form-align" value="'+member.email+'"></td>'
+									+'<td>'
+										+'<select class="btn btn-primary">'
+											+'<option value="0">일반회원</option>'
+											+'<option value="1">관리자</option>'
+									+'</select></td>'
+									+'<td>'
+										+'<select class="btn btn-primary">';
+											//console.log(codelist);
+											td += codelist + '</select></td>'
+									+'<td><a class="editok btn btn-primary">완료</a></td>'
+									+'<td><a class="cancel btn btn-primary">취소</a></td>';
+										//console.log(td);
+						}else {
+							alert("잘못선택하셨습니다.");
+						}	
+													
 						$(tr).append(td);
 								
 						//완료 버튼 클릭시
@@ -224,12 +221,9 @@
 						$('#page').empty();
 						count = count.trim();
 						
-						if(count%2 == 0 ){
-							count = count/4;
-						}else {
-							count = count/4 +1;
-						}
 						//console.log(count);
+						count = count/4;
+						
 						count = Math.ceil(count);
 						//console.log(count);
 						var page = '<span style="padding:4px;" class="page btn btn-primary" id="first">처음</span>';

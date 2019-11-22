@@ -1,4 +1,4 @@
-package kr.or.bit.service;
+package kr.or.bit.service.member;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,22 +7,17 @@ import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.dao.MemberDao;
 
-public class MemberDel implements Action{
+public class MemberTotalCount implements Action{
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
-		//1. 데이터 받기
-		String userid = request.getParameter("userid");
-		
-		//2. 데이터 확인
-		//System.out.println(userid);
-		
-		//3. 처리
 		MemberDao memberdao = new MemberDao();
-		memberdao.memberDel(userid);
+		int memberTotalCount = memberdao.memberTotalCount();
+		
+		request.setAttribute("memberTotalCount", memberTotalCount);
 		
 		ActionForward forward = new ActionForward();
-		forward.setPath("logout.do");
+		forward.setPath("/WEB-INF/memberAjaxJsp/memberTotalCount.jsp");
 		return forward;
 	}
 

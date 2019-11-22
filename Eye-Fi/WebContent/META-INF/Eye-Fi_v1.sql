@@ -109,6 +109,17 @@ insert into ACTIVE values (3,'탈퇴');
 //초기 관리자 생성
 insert into member (userid, userpw, email, admin, code) values('admin', 1004, 'eyefi1920@gmail.com',1,1);
 commit
+
+//회원테스트 데이터
+insert into member (userid, userpw, email, admin, code) values('admin', 1004, 'eyefi1920@gmail.com',1,1);
+insert into member (userid, userpw, email, admin, code) values('nunu', 1004, 'eyefi1920@gmail.com',0,1);
+insert into member (userid, userpw, email, admin, code) values('nene', 1004, 'eyefi1920@gmail.com',0,1);
+insert into member (userid, userpw, email, admin, code) values('papa', 1004, 'eyefi1920@gmail.com',0,1);
+insert into member (userid, userpw, email, admin, code) values('baby', 1004, 'eyefi1920@gmail.com',0,1);
+insert into member (userid, userpw, email, admin, code) values('vuvu', 1004, 'eyefi1920@gmail.com',0,1);
+insert into member (userid, userpw, email, admin, code) values('kiki', 1004, 'eyefi1920@gmail.com',0,1);
+insert into member (userid, userpw, email, admin, code) values('gugu', 1004, 'eyefi1920@gmail.com',0,1);
+commit;
 ----------------------------------------------------------------------------------------------------------------------------------
 		
 /* 게시판 */
@@ -163,7 +174,7 @@ ALTER TABLE BOARD
 CREATE TABLE BOARD_LIST (
 	bcode NUMBER NOT NULL, /* 게시판코드 */
 	bname VARCHAR2(100) NOT NULL, /* 게시판이름 */
-	btyle NUMBER NOT NULL, /* 게시판형식번호 */
+	btype NUMBER NOT NULL, /* 게시판형식번호 */
 	ccode NUMBER NOT NULL /* 카테고리코드 */
 );
 
@@ -173,7 +184,7 @@ COMMENT ON COLUMN BOARD_LIST.bcode IS '게시판코드';
 
 COMMENT ON COLUMN BOARD_LIST.bname IS '게시판이름';
 
-COMMENT ON COLUMN BOARD_LIST.btyle IS '게시판형식번호';
+COMMENT ON COLUMN BOARD_LIST.btype IS '게시판형식번호';
 
 COMMENT ON COLUMN BOARD_LIST.ccode IS '카테고리코드';
 
@@ -191,26 +202,26 @@ ALTER TABLE BOARD_LIST
 
 /* 게시판형식 */
 CREATE TABLE BOARD_TYPE (
-	btyle NUMBER NOT NULL, /* 게시판형식번호 */
-	btyle_name VARCHAR2(50) NOT NULL /* 게시판형식이름 */
+	btype NUMBER NOT NULL, /* 게시판형식번호 */
+	btype_name VARCHAR2(50) NOT NULL /* 게시판형식이름 */
 );
 
 COMMENT ON TABLE BOARD_TYPE IS '게시판형식';
 
-COMMENT ON COLUMN BOARD_TYPE.btyle IS '게시판형식번호';
+COMMENT ON COLUMN BOARD_TYPE.btype IS '게시판형식번호';
 
-COMMENT ON COLUMN BOARD_TYPE.btyle_name IS '게시판형식이름';
+COMMENT ON COLUMN BOARD_TYPE.btype_name IS '게시판형식이름';
 
 CREATE UNIQUE INDEX PK_BOARD_TYPE
 	ON BOARD_TYPE (
-		btyle ASC
+		btype ASC
 	);
 
 ALTER TABLE BOARD_TYPE
 	ADD
 		CONSTRAINT PK_BOARD_TYPE
 		PRIMARY KEY (
-			btyle
+			btype
 		);
 
 /* 게시판카테고리 */
@@ -363,10 +374,10 @@ ALTER TABLE BOARD_LIST
 	ADD
 		CONSTRAINT FK_BOARD_TYPE_TO_BOARD_LIST
 		FOREIGN KEY (
-			btyle
+			btype
 		)
 		REFERENCES BOARD_TYPE (
-			btyle
+			btype
 		);
 
 ALTER TABLE BOARD_LIST
@@ -408,3 +419,21 @@ ALTER TABLE ALBUM
 		REFERENCES BOARD (
 			seq
 		);
+//게시판 리스트 시퀀스 생성
+create sequence blist_seq
+start with 1 increment by 1 nocache;
+		
+//게시판 타입
+insert into board_type(btype, btype_name) values(1, '공지사항');
+insert into board_type(btype, btype_name) values(2, '게시판');
+insert into board_type(btype, btype_name) values(3, '앨범게시판');
+commit;
+
+//카테고리
+insert into category(ccode, cname) values(0, '전체');
+insert into category(ccode, cname) values(11260, '중랑구');
+commit;
+
+//게시판
+insert into board_list(bcode, bname, btype, ccode) values(blist_seq.nextval, '전체 공지사항', 1, 0);
+commit;

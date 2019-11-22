@@ -1,4 +1,4 @@
-package kr.or.bit.dto;
+package kr.or.bit.dto.member;
 
 public class Active { //활성화코드
 	private int code; //코드

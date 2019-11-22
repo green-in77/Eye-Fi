@@ -271,7 +271,8 @@
                             		<li><a data-toggle="modal" data-target="#join">회원가입</a></li>	
                             	</c:when>
                             	<c:when test="${sessionScope.admin == 1}">
-                            		<li><a href="">게시판</a></li>
+                            		<li><a href="noticeboardList.bdo">공지사항</a></li>
+                            		<li><a href="boardList.bdo">게시판</a></li><!-- 드롭다운으로 만들자... -->
                             		<li><a href="memberList.do">회원관리</a></li>
                             		<li><a href="logout.do">로그아웃</a></li>
                             	</c:when>
@@ -420,7 +421,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 					<h4 class="modal-title" id="myModalLabel">회원탈퇴</h4>
 				</div>
-				<form role="form" id="loginForm" action="login.do" method="post">
+				<form role="form" id="delForm" action="login.do" method="post">
 					<div class="modal-body">
 						정말 탈퇴하시겠습니까?
 					</div>
