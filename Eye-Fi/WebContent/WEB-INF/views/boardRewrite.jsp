@@ -69,39 +69,11 @@
 		
 			<div class="row">
 				<div class="col-md-12">
-					<h1 class="page-head-line">글쓰기</h1>
+					<h1 class="page-head-line">답글쓰기</h1>
 				</div>
 			</div>
 			
-			<form name="bbs" action="boardWriteOk.bdo" method="POST">
-				<div class="row">
-					<div class="col-md-2" style="text-align:center;">
-						<c:if test="${requestScope.bcode != 1}">
-							<input type="checkbox" name="notice" value="true">&nbsp;&nbsp;공지사항
-						</c:if>
-					</div>
-					<div class="col-md-5" style="text-align:center;">
-						<!-- 게시판 종류 선택 -->
-						<select class="btn btn-primary" id="board" name="bcode">
-							<option value="">게시판 선택</option>
-						<c:forEach var="board" items="${requestScope.boardList}">
-							<option value="${board.bcode}" <c:if test="${board.bcode == requestScope.bcode}">selected</c:if>>${board.bname}</option>
-						</c:forEach>
-
-						</select>
-					</div>
-					
-					<div class="col-md-5" style="text-align:center;">
-						<!-- 말머리 선택 -->
-						<c:if test="${requestScope.bcode != 1}">
-							<select class="btn btn-primary" id="stcode" name="classify">
-							<option value="">어린이집 선택</option>
-						</select>
-						</c:if>
-						
-					</div>
-				</div>
-				
+			<form name="bbs" action="reboardWriteOk.bdo" method="POST">
 				<div class="row">
 					<div class="col-md-12">
 						<!--    Hover Rows  -->
@@ -111,7 +83,7 @@
 									<table class="table">
 										<tr>
 											<td>제목</td>
-											<td><input type="text" class="form-control" id="subject" name="subject"/></td>
+											<td><input type="text" class="form-control" id="subject" name="subject"/ value="[RE]${requestScope.subject}"></td>
 										</tr>
 										<tr>
 											<td colspan="2"><textarea rows="10" cols="60" name="content" id ="summernote"></textarea></td>
@@ -123,8 +95,10 @@
 	
 						<div class="row">
 							<div class="col-md-12" style="text-align:center;">
+								<input type="hidden" name="seq" value="${requestScope.seq}">
 								<input type="hidden" name="userid" value="${sessionScope.userid}">
-								<input type="submit" class="btn btn-primary" value="글쓰기">
+								<input type="hidden" name="bcode" value="${requestScope.bcode}">
+								<input type="submit" class="btn btn-primary" value="답글쓰기">
 								<input type="reset" class="btn btn-primary" value="다시쓰기">
 							</div>
 						</div>

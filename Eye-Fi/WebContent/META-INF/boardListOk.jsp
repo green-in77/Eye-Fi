@@ -15,16 +15,21 @@
 		<c:set var="cp" value="1"/>	
 	</c:if>
 	
-	<c:set var="bcode" value="${requestScope.bcode}"/>
-	<c:if test="${bcode == null }">
-		<c:set var="bcode" value="1"/>	
-	</c:if>
-	
 	<script type="text/javascript">
 		$(function(){			
+			//var url = "http://api.childcare.go.kr/mediate/rest/cpmsapi030/cpmsapi030/request?key=3cf25a2b59744f50a35d241f64ec6248&arcode=11260";
+			/* $.ajax({
+				url : "http://api.childcare.go.kr/mediate/rest/cpmsapi030/cpmsapi030/request?key=3cf25a2b59744f50a35d241f64ec6248&arcode=11260",
+				dataType: "jsonp",
+				jsonpCallback : 'myCallback',
+				success: callback				
+			}); //ajax 끝
+ */			
+ 			/* $.getJSON(url, "?collback=?", callback); */
+			
 			var cp = ${cp};
 			
-			var bcode = ${bcode};
+			var bcode = 1;
 			var boardlist = "";
 			
 			var url = "boardListOk.bdo";
@@ -122,23 +127,6 @@
 					}
 				});//ajax 끝
 			}//totalcount 끝
-			
-			$('.boardmove').click(function() {
-				console.log($(this));
-				console.log(url);
-				bcode = $(this).val();
-				console.log($('#'+bcode).val())
-				//console.log($(this).closest('div').find("input:eq(0)").val());
-				btype = $('#'+bcode).val()
-				list(url,1,bcode)
-			});//게시판이동 클릭 끝
-			
-			$('#write').click(function() {
-				$('#btype').val(btype)
-				$('#bcode').val(bcode);
-				$('#cp').val(cp);
-			});//글쓰기 클릭 끝
-			
 		});//onload 끝	
 	</script>
     <div class="content-wrapper text-center margin-top0" style="background-image: url('${pageContext.request.contextPath}/assets/img/background.jpg');">
@@ -146,55 +134,32 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<h1 class="page-head-line">게시판</h1>
+					<h1 class="page-head-line">공지게시판</h1>
 				</div>
 			</div>
-			
 			<div class="row">
-				<div class="col-md-2">
-					<!-- 게시판 리스트 -->
-					<div class="panel panel-default">
-						<div class="panel-body">
-							<div class="panel-heading">
-                            	게시판 리스트
-                        	</div>
-							<div class="panel-body">
-	                            <div class="panel-group" id="accordion">
-	                            	<!-- 카페고리1개 -->
-	                            	<c:forEach var="cate" items="${requestScope.cateList}">
-	                            	
-		                                <div class="panel panel-default">
-		                                    <div class="panel-heading">
-		                                        <h4 class="panel-title">
-		                                        	<!-- 카테고리  -->
-		                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse${cate.ccode}" class="collapsed">${cate.cname}</a>
-		                                        </h4>
-		                                    </div>
-		                                    
-		                                    <div id="collapse${cate.ccode}" class="panel-collapse collapse" style="height: 0px;">
-		                                    	<div class="panel-body">
-		                                    		<!-- 카테고리에 맞는 보드리스트 출력 -->
-			                                    	<c:forEach var="board" items="${requestScope.boardList}">
-			                                    		<c:forEach var="type" items="${requestScope.typeList}">
-			                                    			<c:if test="${board.ccode == cate.ccode && board.btype == type.btype}">
-			                                    				<li class="boardmove"  value="${board.bcode}" style="list-style-type:none;">${type.btype_name}</li>
-			                                    				<input type="hidden" id="${board.bcode}" value="${type.btype}">
-					                                    	</c:if>		                                    
-				                                    	</c:forEach>
-				                                	</c:forEach>
-				                                	
-		                                        </div>
-	                                    	</div>
-		                                </div>
-	                                </c:forEach>
-	                                <!-- 카페고리1개 -->
-								</div>
-							</div>
-							
-						</div>
-					</div>
+				<div class="col-md-2" style="text-align:left;">
+
 				</div>
-				<div class="col-md-10">
+				
+				<div class="col-md-2" style="text-align:left;">
+
+				</div>
+				
+				<div class="col-md-4" style="text-align:left;">
+				
+				</div>
+				
+				<div class="col-md-3" style="text-align:right;">
+				<!-- 검색 -->
+					<input type="text" class="form-control" id="search" name="search" style="width: 100%">
+				</div>
+				<div class="col-md-1" style="text-align:right;">
+					<a id="searchsubmit"><i class="fa fa-search" style="font-size:2.3vw;"></i></a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
 					<!--    Hover Rows  -->
 					<div class="panel panel-default">
 						<div class="panel-body">
@@ -217,31 +182,29 @@
 						</div>
 					</div>
 					<!-- End  Hover Rows  -->
-				</div>
-			</div>	
-			
-			<!-- page 처리 -->
-			<div class="row">
-				<div class="col-md-12">
-					<div style="margin-bottom:15px; text-align:center" id="page">
-					
+					<!-- page 처리 -->
+					<div class="row">
+						<div class="col-md-12">
+							<div style="margin-bottom:15px; text-align:center" id="page">
+						
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
-			<!-- page 처리끝 -->
+					<!-- page 처리끝 -->
 					
-			<div class="row">
-				<div class="col-md-12" style="text-align:right;">
-				<!-- 글쓰기 버튼-->
-					<c:if test="${sessionScope.admin == 1}">
-						<form action="boardWrite.bdo" method="post" id="writefrom">
-							<input type="hidden" id="btype" name="btype" value="">
-							<input type="hidden" id="cp" name="cp" value="">
-							<input type="hidden" id="bcode" name="bcode" value="">
-							<input type="submit" class="btn btn-primary" id="write" value="글쓰기">
-						</form>
-					</c:if>
-				</div>
+					<div class="row">
+						<div class="col-md-12" style="text-align:right;">
+						<!-- 글쓰기 버튼-->
+							<c:if test="${sessionScope.admin == 1}">
+								<form action="boardWrite.bdo" method="post">
+									<input type="hidden" name="bcode" value="1">
+									<input type="submit" class="btn btn-primary" value="글쓰기">
+								</form>
+							</c:if>
+						</div>
+					</div>
+					
+				</div>	
 			</div>
     	</div>
 

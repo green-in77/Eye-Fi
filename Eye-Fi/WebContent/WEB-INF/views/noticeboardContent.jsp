@@ -51,8 +51,19 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-12" style="text-align:center;">
-							<form action="noticeboardList.bdo" method="post">
+						<div class="col-md-6" style="text-align : right;">
+							<c:if test="${board.bcode != 1}">
+								<form action="boardRewrite.bdo" method="post" >
+									<input type="hidden" name="subject" value="${board.subject}">
+									<input type="hidden" name="seq" value="${board.seq}">
+									<input type="hidden" name="bcode" value="${board.bcode}">
+									<input type="hidden" name="cp" value="${requestScope.cp}">
+									<input type="submit" class="btn btn-primary" value="답글쓰기">
+								</form>	
+							</c:if>
+						</div>
+						<div class="col-md-6" style="text-align:left;">
+							<form action="boardList.bdo" method="post">
 								<input type="hidden" name="bcode" value="${board.bcode}">
 								<input type="hidden" name="cp" value="${requestScope.cp}">
 								<input type="submit" class="btn btn-primary" value="목록가기">

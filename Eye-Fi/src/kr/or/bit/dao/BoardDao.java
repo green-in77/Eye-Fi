@@ -12,6 +12,7 @@ import kr.or.bit.dto.board.Board;
 import kr.or.bit.dto.board.Board_List;
 import kr.or.bit.dto.board.Board_Type;
 import kr.or.bit.dto.board.Category;
+import kr.or.bit.dto.board.Reboard;
 import kr.or.bit.dto.member.Member;
 import kr.or.bit.utils.ConnectionHelper;
 import kr.or.bit.utils.DB_Close;
@@ -119,16 +120,43 @@ public class BoardDao {
 		}
 		return boardList;
 	}
-
-	//게시판 글쓰기
-	public int write(Board board) {
+	
+	//btype 조회
+	public int btypeSel(int bcode) {
 		Connection conn = ConnectionHelper.getConnection("oracle");
 		PreparedStatement pstmt = null;
-		int row = 0;
+		ResultSet rs = null;
+		int btype = 0;
 		
 		try {
+			String sql = "select btype from board_list where bcode = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bcode);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				btype = rs.getInt("btype");
+			}
+		} catch(Exception e) {
+			System.out.println("btype : " + e.getMessage());
+		} finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(rs);
+			DB_Close.close(conn);
+		}
+		return btype;
+	}
+	
+	//공지게시판 글쓰기
+	public int noticeWrite(Board board) {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int row = 0;
+		
+		try {			
 			String sql_write = "insert into board (seq, userid, subject, content, classify, notice, bcode) "
-								+ "values (board_seq.nextval, ?, ?, ?, ?, ?, ?)";
+						+ "values (board_seq.nextval, ?, ?, ?, ?, ?, ?)";
 			pstmt = conn.prepareStatement(sql_write);
 			
 			pstmt.setString(1, board.getUserid());
@@ -137,15 +165,141 @@ public class BoardDao {
 			pstmt.setString(4, board.getClassify());
 			pstmt.setString(5, board.getNotice());
 			pstmt.setInt(6, board.getBcode());
-			
+
 			row = pstmt.executeUpdate();
-			
 		} catch(Exception e) {
-			System.out.println("write : " + e.getMessage());
+			System.out.println("noticewrite : " + e.getMessage());
 		} finally{
 			DB_Close.close(pstmt);
 			DB_Close.close(conn);
 		}
+		return row;
+	}
+	
+	//일반게시판 글쓰기
+	public int write(Reboard reboard) {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		int row = 0;
+		
+		try {
+			int refer = getMaxRefer() +1;
+			
+			String sql_write = "insert all "
+					+"into board (seq, userid, subject, content, classify, notice, bcode) "
+					+"values (board_seq.nextval, ?, ?, ?, ?, ?, ?) "
+					+"into reboard(col, seq, refer, depth, step, pseq) "
+					+"values (reboard_seq.nextval, board_seq.currval, ?, 0, 0, board_seq.currval) "
+					+"SELECT * FROM DUAL";
+			
+			pstmt = conn.prepareStatement(sql_write);
+			
+			pstmt.setString(1, reboard.getUserid());
+			pstmt.setString(2, reboard.getSubject());
+			pstmt.setString(3, reboard.getContent());
+			pstmt.setString(4, reboard.getClassify());
+			pstmt.setString(5, reboard.getNotice());
+			pstmt.setInt(6, reboard.getBcode());
+			
+			pstmt.setInt(7, refer);
+
+			row = pstmt.executeUpdate();
+		}catch(Exception e) {
+			System.out.println("write : " + e.getMessage());
+		} finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(conn);
+		}
+		return row;
+	}
+	
+	//refer 생성하기
+	private int getMaxRefer() {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		int refer_max = 0;
+		
+		try {
+			String sql = "select nvl(max(refer),0) from reboard";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				refer_max = rs.getInt(1);
+			}
+		}
+		catch(Exception e) {
+			System.out.println("maxrefer : " + e.getMessage());
+		}finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(rs);
+			DB_Close.close(conn);
+		}
+		return refer_max;
+	}
+		
+	//답글쓰기
+	public int reWrite(Reboard reboard) {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int row = 0;
+		
+		try {
+			int refer = getMaxRefer();
+			int step = 1;
+			int depth = 1;
+			
+			//읽은글의 최신답글 찾기..
+			String sql_seq = "select refer, depth, step from reboard where pseq = ? order by col desc";
+			pstmt = conn.prepareStatement(sql_seq);
+			pstmt.setInt(1, reboard.getPseq());
+			rs = pstmt.executeQuery();
+		
+			if(rs.next()) {
+				refer = rs.getInt("refer");
+				step = rs.getInt("step");
+				depth = rs.getInt("depth");
+				
+				//나중에 쓴 답글이 위로 올라오게 step +1
+				String sql_step_update = "update reboard set step = step+1 where step > ? and refer = ?";
+				pstmt = conn.prepareStatement(sql_step_update);
+				pstmt.setInt(1, step);
+				pstmt.setInt(2, refer);
+				pstmt.executeUpdate();
+			}
+			
+			String sql_rewrite = "insert all "
+					+"into board (seq, userid, subject, content, classify, notice, bcode) "
+					+"values (board_seq.nextval, ?, ?, ?, ?, ?, ?) "
+					+"into reboard(col, seq, refer, depth, step, pseq) "
+					+"values (reboard_seq.nextval, board_seq.currval, ?, ?, ?, ?) "
+					+"SELECT * FROM DUAL";
+			
+			pstmt = conn.prepareStatement(sql_rewrite);
+			pstmt.setString(1, reboard.getUserid());
+			pstmt.setString(2, reboard.getSubject());
+			pstmt.setString(3, reboard.getContent());
+			pstmt.setString(4, reboard.getClassify());
+			pstmt.setString(5, reboard.getNotice());
+			pstmt.setInt(6, reboard.getBcode());
+			
+			pstmt.setInt(7, refer);
+			pstmt.setInt(8, depth+1); //현재 읽은 글의 depth +1
+			pstmt.setInt(9, step+1); //순서 update 통해서 자리확보 +1
+			
+			pstmt.setInt(10, reboard.getSeq());
+			
+			row = pstmt.executeUpdate();
+			
+		} catch(Exception e) {
+			System.out.println("reWrite : " + e.getMessage());
+		} finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(conn);
+		}		
 		return row;
 	}
 	
@@ -202,9 +356,77 @@ public class BoardDao {
 		}
 		return boardlist;
 	}
-
+	
+	//일반게시판 리스트 조회
+	public List<Board> boardList(int cp, int bcode){
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Reboard> reboardList = new ArrayList<Reboard>();
+		
+		try {
+			
+			String sql = "select * from (select rownum rn, a.* "
+										+ "from (SELECT * FROM board b join reboard r on b.seq = r.seq ORDER BY refer DESC , step ASC) a "
+										+" where bcode = ? and del=0 and rownum <= ?)" 
+						+" where rn >= ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, bcode);
+			
+			int start = cp * 4 - (4-1); //1 * 5 - (5 - 1) >> 1
+			int end = cp * 4; // 1 * 5 >> 5
+				
+			pstmt.setInt(2, end);
+			pstmt.setInt(3, start);
+		
+			rs = pstmt.executeQuery();
+			
+			
+			while(rs.next()){
+				Reboard reboard = new Reboard();
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+	            java.util.Date date = sdf.parse(rs.getString("logtime"));
+	            Date logtime = new Date(date.getTime());
+				
+				
+				reboard.setSeq(rs.getInt("seq"));
+				reboard.setUserid(rs.getString("userid"));
+				reboard.setSubject(rs.getString("subject"));
+				reboard.setContent(rs.getString("content"));
+				reboard.setHit(rs.getInt("hit"));
+				reboard.setLogtime(logtime);
+				reboard.setClassify(rs.getString("classify"));
+				reboard.setDel(rs.getString("del"));
+				reboard.setNotice(rs.getString("notice"));
+				reboard.setBcode(rs.getInt("bcode"));
+				
+				reboard.setCOL(rs.getInt("cOL"));
+				reboard.setSeq(rs.getInt("seq"));
+				reboard.setRefer(rs.getInt("refer"));
+				reboard.setDepth(rs.getInt("depth"));
+				reboard.setStep(rs.getInt("step"));
+				reboard.setRebdel(rs.getInt("rebdel"));
+				reboard.setPseq(rs.getInt("pseq"));
+				
+				reboardList.add(reboard);
+			}
+			
+		} catch(Exception e) {
+			System.out.println("boardlist : " + e.getMessage());
+		} finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(rs);
+			DB_Close.close(conn);
+		}
+		
+		return null;
+	}	
+	
 	//게시판 총 건수 조회
-	public int  boardTotalCount(int bcode) {
+	public int boardTotalCount(int bcode) {
 		Connection conn = ConnectionHelper.getConnection("oracle");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -229,6 +451,8 @@ public class BoardDao {
 		}
 		return totalcount;
 	}
+	
+	//게시글 상세보기
 	
 	//글상세보기
 	public Board boardContent(int seq) {
@@ -271,6 +495,8 @@ public class BoardDao {
 		}
 		return board;
 	}
+	
+	//조회수증가
 
 	//조회수 증가
 	public boolean hitAdd(String seq) {

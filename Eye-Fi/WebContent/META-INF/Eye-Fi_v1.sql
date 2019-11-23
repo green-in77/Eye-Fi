@@ -291,6 +291,7 @@ CREATE TABLE REBOARD (
 	refer NUMBER NOT NULL, /* 그룹번호 */
 	depth NUMBER NOT NULL, /* 들여쓰기 */
 	step NUMBER NOT NULL, /* 답변정렬 */
+	pseq NUMBER NOT NULL, /* 원글번호 */
 	rebdel NUMBER DEFAULT 0 NOT NULL /* 삭제 */
 );
 
@@ -306,6 +307,8 @@ COMMENT ON COLUMN REBOARD.depth IS '들여쓰기';
 
 COMMENT ON COLUMN REBOARD.step IS '답변정렬';
 
+COMMENT ON COLUMN REBOARD.pseq IS '원글번호';
+
 COMMENT ON COLUMN REBOARD.rebdel IS '삭제';
 
 CREATE UNIQUE INDEX PK_REBOARD
@@ -319,7 +322,7 @@ ALTER TABLE REBOARD
 		PRIMARY KEY (
 			COL
 		);
-
+		
 /* 앨범 */
 CREATE TABLE ALBUM (
 	aseq NUMBER NOT NULL, /* 앨범식별번호 */

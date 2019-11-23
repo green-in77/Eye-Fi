@@ -271,8 +271,8 @@
                             		<li><a data-toggle="modal" data-target="#join">회원가입</a></li>	
                             	</c:when>
                             	<c:when test="${sessionScope.admin == 1}">
-                            		<li><a href="noticeboardList.bdo">공지사항</a></li>
-                            		<li><a href="boardList.bdo">게시판</a></li><!-- 드롭다운으로 만들자... -->
+                            		<!-- <li><a href="noticeboardList.bdo">공지사항</a></li> -->
+                            		<li><a href="boardList.bdo">게시판</a></li>
                             		<li><a href="memberList.do">회원관리</a></li>
                             		<li><a href="logout.do">로그아웃</a></li>
                             	</c:when>

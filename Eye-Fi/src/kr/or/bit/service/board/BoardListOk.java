@@ -28,8 +28,15 @@ public class BoardListOk implements Action {
 		//System.out.println("bcode : " + bcode + "cp : " + cp);
 		
 		BoardDao boarddao = new BoardDao();
-		List<Board> boardlist = boarddao.noticeboardList(Integer.parseInt(cp), Integer.parseInt(bcode));
+		int btype = boarddao.btypeSel(Integer.parseInt(bcode));
+		List<Board> boardlist = null;
 		
+		if( btype == 1 ) {
+			boardlist = boarddao.noticeboardList(Integer.parseInt(cp), Integer.parseInt(bcode));
+		} else if( btype == 2) {
+			boardlist = boarddao.boardList(Integer.parseInt(cp), Integer.parseInt(bcode));
+		}
+
 		JSONArray boardlistJson = JSONArray.fromObject(boardlist);
 		
 		request.setAttribute("boardlist", boardlistJson);
