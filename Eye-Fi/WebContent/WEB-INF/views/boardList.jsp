@@ -28,9 +28,9 @@
 			var boardlist = "";
 			
 			var url = "boardListOk.bdo";
-			
+			var counturl = "boardTotalCount.bdo";
 			list(url,cp, bcode);
-			totalcount("boardTotalCount.bdo",bcode);
+			totalcount(counturl,bcode);
 
 			//회원리스트 관련
 			function list(url,cp,bcode){
@@ -44,22 +44,46 @@
 					type: "POST",
 					success: function(list){
 						//console.log(list);
-
 						//console.log(cp);
 						$('#tbody').empty();
 						boardlist = "";
+						
 						if(list != ""){
-							$.each(list, function(index, board){
-								//console.log(board);
-								boardlist += '<tr>'
-												+'<td>'+board.seq+'</td>'
-												+'<td><a href="boardContent.bdo?bcode=1&cp='+cp+'&seq='+board.seq+'">'+board.subject+'</td>'
-												+'<td>'+board.userid+'</td>'
-												+'<td>'+board.logtime+'</td>'
-												+'<td>'+board.hit+'</td>'
-											  +'</tr>'
-							});//each 끝
-	
+							//console.log(list[0].bcode);
+							
+							if(list[0].bcode == 1){
+								$.each(list, function(index, board){
+									//console.log(board);
+									boardlist += '<tr>'
+													+'<td>'+board.seq+'</td>'
+													+'<td><a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'">'+board.subject+'</td>'
+													+'<td>'+board.userid+'</td>'
+													+'<td>'+board.logtime+'</td>'
+													+'<td>'+board.hit+'</td>'
+												  +'</tr>'
+								});//each 끝
+								
+							} if(list[0].bcode == 2){
+								$.each(list, function(index, board){
+									boardlist += '<tr>'
+													+'<td>'+board.seq+'</td>'
+													+'<td style="text-align:left;">';
+										
+									for(var i = 1 ;i<=board.depth;i++){
+										boardlist += '&nbsp;&nbsp;&nbsp';
+										
+										if(board.depth>0){
+											boardlist += '<img src = "${pageContext.request.contextPath}/assets/img/re.gif">';
+										}
+									}
+									
+									boardlist += 	'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'">'+board.subject+'</td>'
+													+'<td>'+board.userid+'</td>'
+													+'<td>'+board.logtime+'</td>'
+													+'<td>'+board.hit+'</td>'
+								  				+'</tr>'
+								});//each 끝
+							}
 						}else {
 							boardlist = "데이터가 없습니다.";
 						}
@@ -75,6 +99,7 @@
 			
 			//페이징처리
 			function totalcount(totalcount,bcode){
+				//console.log(bcode);
 				$.ajax({
 					url:totalcount,
 					data : {"bcode" : bcode},
@@ -112,7 +137,8 @@
 							}else {
 								cp = (cur);
 							}
-							//console.log(cp);
+							console.log(cp);
+							console.log(bcode);
 							
 							list(url,cp,bcode);
 						});
@@ -124,21 +150,66 @@
 			}//totalcount 끝
 			
 			$('.boardmove').click(function() {
-				console.log($(this));
-				console.log(url);
+				//console.log($(this));
+				//console.log(url);
 				bcode = $(this).val();
-				console.log($('#'+bcode).val())
+				//console.log(bcode)
 				//console.log($(this).closest('div').find("input:eq(0)").val());
 				btype = $('#'+bcode).val()
-				list(url,1,bcode)
+				ccode = $('#'+bcode+'c').val()
+				//console.log(ccode);
+				
+				list(url,1,bcode);
+				totalcount(counturl,bcode);
+				
+				if(bcode != 1){
+					$.ajax({
+						url : 'childListAjax.ch',
+						data : {"arcode" : ccode},
+						dataType : "json",
+						type : "get",
+						success : function(res){
+							console.log(res);
+							crname = "";
+							$('#crname').empty();
+							
+							var crname = '<th colspan="5"><select id="crname"><option value="">어린이집 선택</option>';
+							$.each(res, function(index, list) {
+								console.log(list.crname);	
+								crname += '<option value="'+list.crname+'">'+list.crname+'</option>';
+							})
+							crname += "</select></th>";
+							$('#crname').append(crname);
+						},
+						error : function(xhr){
+							console.log(xhr.status);
+						}
+					});//외부데이터 끝
+				}
+				
+				$('#writebutton').empty();
+				//console.log(bcode == 1 && ${sessionScope.admin}==1);
+				//console.log(bcode != 1 && '${sessionScope.userid}' != null);
+				writebutton = "";
+				if((bcode == 1 && ${sessionScope.admin}==1) || (bcode != 1 && '${sessionScope.userid}' != null) ){
+					writebutton = '<form action="boardWrite.bdo" method="post" id="writefrom">'
+									+ '<input type="hidden" id="btype" name="btype" value="">'
+									+ '<input type="hidden" id="cp" name="cp" value="">'
+									+ '<input type="hidden" id="bcode" name="bcode" value="">'
+									+ '<input type="submit" class="btn btn-primary" id="write" value="글쓰기">'
+								+ '</form>';
+				}
+				$('#writebutton').append(writebutton);
+				
+				$('#write').click(function() {
+					console.log(bcode);
+					$('#btype').val(btype)
+					$('#bcode').val(bcode);
+					$('#cp').val(cp);
+				});//글쓰기 클릭 끝
+				
 			});//게시판이동 클릭 끝
-			
-			$('#write').click(function() {
-				$('#btype').val(btype)
-				$('#bcode').val(bcode);
-				$('#cp').val(cp);
-			});//글쓰기 클릭 끝
-			
+	
 		});//onload 끝	
 	</script>
     <div class="content-wrapper text-center margin-top0" style="background-image: url('${pageContext.request.contextPath}/assets/img/background.jpg');">
@@ -179,6 +250,7 @@
 			                                    			<c:if test="${board.ccode == cate.ccode && board.btype == type.btype}">
 			                                    				<li class="boardmove"  value="${board.bcode}" style="list-style-type:none;">${type.btype_name}</li>
 			                                    				<input type="hidden" id="${board.bcode}" value="${type.btype}">
+			                                    				<input type="hidden" id="${board.bcode}c" value="${cate.ccode}">
 					                                    	</c:if>		                                    
 				                                    	</c:forEach>
 				                                	</c:forEach>
@@ -201,6 +273,7 @@
 							<div class="table-responsive">
 								<table class="table table-hover">
 									<thead>
+										<tr id="crname"></tr>
 										<tr>
 											<th>#</th>
 											<th>글제목</th>
@@ -231,16 +304,16 @@
 			<!-- page 처리끝 -->
 					
 			<div class="row">
-				<div class="col-md-12" style="text-align:right;">
+				<div class="col-md-12" style="text-align:right;" id="writebutton">
 				<!-- 글쓰기 버튼-->
-					<c:if test="${sessionScope.admin == 1}">
+					<c:if test="${(bcode == 1 && sessionScope.admin == 1) || (bcode != 1 && sessionScope.userid != null)}">
 						<form action="boardWrite.bdo" method="post" id="writefrom">
 							<input type="hidden" id="btype" name="btype" value="">
 							<input type="hidden" id="cp" name="cp" value="">
 							<input type="hidden" id="bcode" name="bcode" value="">
 							<input type="submit" class="btn btn-primary" id="write" value="글쓰기">
 						</form>
-					</c:if>
+					</c:if> 
 				</div>
 			</div>
     	</div>

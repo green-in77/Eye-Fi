@@ -176,6 +176,35 @@ public class BoardDao {
 		return row;
 	}
 	
+	//공지게시판 글수정
+	public int noticeEditOk(Board board) {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int row = 0;
+		
+		try {			
+			String sql_edit = "update board set subject=?, content=?, classify=?, notice=?, bcode=? where seq = ?";
+						
+			pstmt = conn.prepareStatement(sql_edit);
+			
+			pstmt.setString(1, board.getSubject());
+			pstmt.setString(2, board.getContent());
+			pstmt.setString(3, board.getClassify());
+			pstmt.setString(4, board.getNotice());
+			pstmt.setInt(5, board.getBcode());
+			pstmt.setInt(6, board.getSeq());
+
+			row = pstmt.executeUpdate();
+		} catch(Exception e) {
+			System.out.println("noticeedit : " + e.getMessage());
+		} finally{
+			DB_Close.close(pstmt);
+			DB_Close.close(conn);
+		}
+		return row;
+	}
+	
 	//일반게시판 글쓰기
 	public int write(Reboard reboard) {
 		Connection conn = ConnectionHelper.getConnection("oracle");
@@ -253,7 +282,7 @@ public class BoardDao {
 			int depth = 1;
 			
 			//읽은글의 최신답글 찾기..
-			String sql_seq = "select refer, depth, step from reboard where pseq = ? order by col desc";
+			String sql_seq = "select refer, depth, step from reboard where seq = ? order by col desc";
 			pstmt = conn.prepareStatement(sql_seq);
 			pstmt.setInt(1, reboard.getPseq());
 			rs = pstmt.executeQuery();
@@ -290,7 +319,7 @@ public class BoardDao {
 			pstmt.setInt(8, depth+1); //현재 읽은 글의 depth +1
 			pstmt.setInt(9, step+1); //순서 update 통해서 자리확보 +1
 			
-			pstmt.setInt(10, reboard.getSeq());
+			pstmt.setInt(10, reboard.getPseq());
 			
 			row = pstmt.executeUpdate();
 			
@@ -358,7 +387,7 @@ public class BoardDao {
 	}
 	
 	//일반게시판 리스트 조회
-	public List<Board> boardList(int cp, int bcode){
+	public List<Reboard> boardList(int cp, int bcode){
 		Connection conn = ConnectionHelper.getConnection("oracle");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -413,6 +442,7 @@ public class BoardDao {
 				
 				reboardList.add(reboard);
 			}
+			//System.out.println("rebo : " + reboardList);
 			
 		} catch(Exception e) {
 			System.out.println("boardlist : " + e.getMessage());
@@ -422,7 +452,7 @@ public class BoardDao {
 			DB_Close.close(conn);
 		}
 		
-		return null;
+		return reboardList;
 	}	
 	
 	//게시판 총 건수 조회
@@ -433,7 +463,7 @@ public class BoardDao {
 		int totalcount = 0;
 		
 		try {
-			String sql_count = "select count(seq) from board where bcode = ?";
+			String sql_count = "select count(seq) from board where bcode = ? and del=0";
 			pstmt = conn.prepareStatement(sql_count);
 			pstmt.setInt(1, bcode);
 			
@@ -451,9 +481,7 @@ public class BoardDao {
 		}
 		return totalcount;
 	}
-	
-	//게시글 상세보기
-	
+		
 	//글상세보기
 	public Board boardContent(int seq) {
 		Connection conn = ConnectionHelper.getConnection("oracle");
@@ -496,8 +524,6 @@ public class BoardDao {
 		return board;
 	}
 	
-	//조회수증가
-
 	//조회수 증가
 	public boolean hitAdd(String seq) {
 		Connection conn = ConnectionHelper.getConnection("oracle");
@@ -523,5 +549,41 @@ public class BoardDao {
 		}
 		return result;
 	}
+	
+	//글 삭제 (미완성)
+	public int boardDeleteOk(String seq) {
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int row = 0;
+		
+		try {
+			String sql_del = "update board set del=1 where seq = ?";
+			pstmt = conn.prepareStatement(sql_del);
+			
+			pstmt.setString(1, seq);
+			
+			row = pstmt.executeUpdate();
+		} catch(Exception e) {
+			System.out.println("boarddelete : " + e.getMessage());
+		} finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(rs);
+			DB_Close.close(conn);
+		}
+		
+		return row;
+	}
+	
+	//일반게시판 글 수정(미완성)
+	public int boardEditOK(Reboard reboard) {
+		return 0;
+	}
+	
+	//댓글쓰기(미완성)
+	
+	//댓글조회(미완성)
+	
+	//댓글삭제(미완성)
 	
 }

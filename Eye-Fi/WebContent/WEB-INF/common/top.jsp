@@ -117,7 +117,7 @@
 			
 			//전송
 			$('#submit').click(function() {
-				console.log($('#emailCheckReturn').val());
+				//console.log($('#emailCheckReturn').val());
 				
 				if($('#emailCheckReturn').val() == "true"){
 					email_check = true;
@@ -264,7 +264,7 @@
                     <div class="navbar-collapse collapse ">
                         <ul id="menu-top" class="nav navbar-nav navbar-right">
                             <li><a href="index.jsp">Eye-Fi</a></li>
-                            <li><a href="">어린이집</a></li>
+                            <li><a href="childList.ch">어린이집</a></li>
                             <c:choose>
                             	<c:when test="${sessionScope.userid == null}">
                             		<li><a data-toggle="modal" data-target="#login">로그인</a></li>
@@ -277,7 +277,7 @@
                             		<li><a href="logout.do">로그아웃</a></li>
                             	</c:when>
                             	<c:otherwise>
-                            		<li><a href="">게시판</a></li>
+                            		<li><a href="boardList.bdo">게시판</a></li>
                             		<li><a href="logout.do">로그아웃</a></li>
                             	</c:otherwise>
                             </c:choose>

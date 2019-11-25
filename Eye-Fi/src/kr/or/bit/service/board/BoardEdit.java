@@ -8,32 +8,38 @@ import javax.servlet.http.HttpServletResponse;
 import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.dao.BoardDao;
+import kr.or.bit.dto.board.Board;
 import kr.or.bit.dto.board.Board_List;
 
-public class BoardWrite implements Action{
+public class BoardEdit implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
 		//1. 데이터 받기
-		String bcode = request.getParameter("bcode");
+		String seq = request.getParameter("seq").trim();
+		String bcode = request.getParameter("bcode").trim();
 		String cp = request.getParameter("cp");
-		String btype = request.getParameter("btype");		
 		
 		//2. 데이터 확인
-		//System.out.println(bcode + " / " + cp + " / " + btype);
-			
-		//3.처리
+		//System.out.println(seq + "/" + bcode + "/" + cp);
+		
+		String url = "/WEB-INF/views/boardEdit.jsp";
+		
+		if(seq == null || bcode == null) {
+			url = "boardListOk.bdo";
+		}
+		
 		BoardDao boarddao = new BoardDao();
+		Board board = boarddao.boardContent(Integer.parseInt(seq));
 		List<Board_List> boardList = boarddao.listSel();
 		
-		request.setAttribute("btype", btype);
+		request.setAttribute("boardList", boardList);
+		request.setAttribute("board", board);
 		request.setAttribute("bcode", bcode);
 		request.setAttribute("cp", cp);
-		request.setAttribute("boardList", boardList);
 		
 		ActionForward forward = new ActionForward();
-		forward.setPath("/WEB-INF/views/boardWrite.jsp");
-		
+		forward.setPath(url);
 		return forward;
 	}
 

@@ -30,38 +30,43 @@
 				height : 300,
 				minHeight : null,
 				maxHeight : null,
-				focus : true
+				focus : true,
+				toolbar: [
+				    // [groupName, [list of button]]
+				    ['style', ['bold', 'italic', 'underline', 'clear']],
+				    ['font', ['strikethrough', 'superscript', 'subscript']],
+				    ['fontsize', ['fontsize']],
+				    ['color', ['color']],
+				    ['para', ['ul', 'ol', 'paragraph']],
+				    ['height', ['height']]
+				  ]
 			});
+			$('#writeOk').click(function() {
+				let subject = false;
+				let centent = false;
+					
+				//console.log($('#subject').val());
+				//console.log($('#summernote').val());
+
+				if($('#subject').val() == ""){
+					alert("제목을 입력하세요.");
+				}else {
+					subject = true;
+				}
+				
+				if($('#summernote').val() == ""){
+					alert("내용을 입력하세요.");
+				}else {
+					centent = true;
+				}
+				
+				let issubmit = subject && content;
+				
+				return issubmit;
+			})
 			
 		});
-		
-		function check(){
-			
-		    if(!bbs.subject.value){
-		        alert("제목을 입력하세요");
-		        bbs.subject.focus();
-		        return false;
-		    }
-		    if(!bbs.writer.value){
-		        
-		        alert("이름을 입력하세요");
-		        bbs.writer.focus();
-		        return false;
-		    }
-		   /*  if(!bbs.content.value){            
-		        alert("글 내용을 입력하세요");
-		        bbs.content.focus();
-		        return false;
-		    } */
-		    if(!bbs.pwd.value){            
-		        alert("비밀번호를 입력하세요");
-		        bbs.pwd.focus();
-		        return false;
-		    }
-		 
-		    document.bbs.submit();
-	
-		}
+
 	</script>
     <div class="content-wrapper text-center margin-top0" style="background-image: url('${pageContext.request.contextPath}/assets/img/background.jpg');">
 		<!-- 여기부터 -->
@@ -86,7 +91,7 @@
 											<td><input type="text" class="form-control" id="subject" name="subject"/ value="[RE]${requestScope.subject}"></td>
 										</tr>
 										<tr>
-											<td colspan="2"><textarea rows="10" cols="60" name="content" id ="summernote"></textarea></td>
+											<td colspan="2"><textarea rows="10" cols="60" name="content" id ="summernote">원본글<br>${requestScope.content}-----------<br></textarea></td>
 										</tr>
 									</table>
 								</div>
@@ -98,7 +103,7 @@
 								<input type="hidden" name="seq" value="${requestScope.seq}">
 								<input type="hidden" name="userid" value="${sessionScope.userid}">
 								<input type="hidden" name="bcode" value="${requestScope.bcode}">
-								<input type="submit" class="btn btn-primary" value="답글쓰기">
+								<input type="submit" class="btn btn-primary" value="답글쓰기" id="writeOk">
 								<input type="reset" class="btn btn-primary" value="다시쓰기">
 							</div>
 						</div>

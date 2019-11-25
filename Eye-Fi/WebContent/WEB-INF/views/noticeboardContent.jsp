@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:import url="../common/admin.jsp" />
+<c:import url="../common/member.jsp" />
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -51,9 +51,30 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-6" style="text-align : right;">
+						<c:if test="${board.userid == sessionScope.userid || sessionScope.admin == 1}">
+						
+							<div class="col-md-3" style="text-align : right;">
+								<form action="boardEdit.bdo" method="post">
+									<input type="hidden" name="seq" value="${board.seq}">
+									<input type="hidden" name="bcode" value="${board.bcode}">
+									<input type="hidden" name="cp" value="${requestScope.cp}">
+									<input type="submit" class="btn btn-primary" value="수정하기">
+								</form>	
+							</div>
+							
+							<div class="col-md-3" style="text-align : right;">
+								<form action="boardDelete.bdo" method="post" >
+									<input type="hidden" name="seq" value="${board.seq}">
+									<input type="hidden" name="bcode" value="${board.bcode}">
+									<input type="hidden" name="cp" value="${requestScope.cp}">
+									<input type="submit" class="btn btn-primary" value="삭제하기">
+								</form>	
+							</div>
+						</c:if>
+						<div class="col-md-3" style="text-align : right;">
 							<c:if test="${board.bcode != 1}">
 								<form action="boardRewrite.bdo" method="post" >
+									<input type="hidden" name="content" value="${board.content}">
 									<input type="hidden" name="subject" value="${board.subject}">
 									<input type="hidden" name="seq" value="${board.seq}">
 									<input type="hidden" name="bcode" value="${board.bcode}">
@@ -62,13 +83,15 @@
 								</form>	
 							</c:if>
 						</div>
-						<div class="col-md-6" style="text-align:left;">
+						
+						<div class="col-md-3" style="text-align:left;">
 							<form action="boardList.bdo" method="post">
 								<input type="hidden" name="bcode" value="${board.bcode}">
 								<input type="hidden" name="cp" value="${requestScope.cp}">
 								<input type="submit" class="btn btn-primary" value="목록가기">
 							</form>
 						</div>
+						
 					</div>
 					
 				</div>	

@@ -72,7 +72,7 @@ public class Reboard extends Board{
 		return "Board [seq=" + seq + ", userid=" + getUserid() + ", subject=" + getSubject() + ", content=" + getContent() + ", hit="
 				+ getHit() + ", logtime=" + getLogtime() + ", classify=" + getClassify() + ", del=" + getDel() + ", notice=" + getNotice()
 				+ ", bcode=" + getBcode() + "]"+"Reboard [COL=" + COL + ", seq=" + seq + ", refer=" + refer + ", depth=" + depth + ", step=" + step
-				+ ", rebdel=" + rebdel + "]";
+				+ ", rebdel=" + rebdel +", pseq="+pseq +"]";
 	}
 
 }

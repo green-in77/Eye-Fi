@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
-import kr.or.bit.service.board.Ajax;
 import kr.or.bit.service.board.BoardCreate;
+import kr.or.bit.service.board.BoardDelete;
+import kr.or.bit.service.board.BoardEdit;
+import kr.or.bit.service.board.BoardEditOk;
 import kr.or.bit.service.board.BoardList;
 import kr.or.bit.service.board.BoardListOk;
 import kr.or.bit.service.board.BoardTotalCount;
@@ -87,11 +89,21 @@ public class BoardFrontController extends HttpServlet {
 			action = new RewriteOk();
 			forward = action.execute(request, response);
 			
-		}
-		
-		else if( url_Command.equals("/listajax.bdo")) {
-			action = new Ajax();
+		}else if( url_Command.equals("/boardDelete.bdo")) {
+			//삭제하기
+			action = new BoardDelete();
 			forward = action.execute(request, response);
+			
+		}else if( url_Command.equals("/boardEdit.bdo")) {
+			//수정하기 화면
+			action = new BoardEdit();
+			forward = action.execute(request, response);
+			
+		}else if( url_Command.equals("/boardEditOk.bdo")) {
+			//수정하기
+			action = new BoardEditOk();
+			forward = action.execute(request, response);
+			
 		}
 		
 //----------------------------------------------------------------------------------------------------------------------------------------------------

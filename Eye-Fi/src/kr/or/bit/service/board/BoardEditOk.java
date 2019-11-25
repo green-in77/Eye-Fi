@@ -9,42 +9,51 @@ import kr.or.bit.dao.BoardDao;
 import kr.or.bit.dto.board.Board;
 import kr.or.bit.dto.board.Reboard;
 
-public class RewriteOk implements Action{
+public class BoardEditOk implements Action{
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
 		//1. 데이터 받기
-		String userid = request.getParameter("userid");
+		String seq = request.getParameter("seq");
 		String subject = request.getParameter("subject");
 		String content = request.getParameter("content");
+		String classify = request.getParameter("classify");
+		String notice = request.getParameter("notice");
 		String bcode = request.getParameter("bcode");
-		String seq = request.getParameter("seq");
 		
 		//2. 데이터 확인
-		//System.out.println(userid +"/"+ subject +"/"+ content +"/ bcode: "+ bcode + "/"+seq);
+		//System.out.println(seq + " / " + subject +"/"+ content +"/"+ classify +"/"+ notice +"/ bcode: "+ bcode);
+		
+		if(notice == null) {
+			notice = "false";
+		}
 		
 		//3. 처리
-		Reboard reboard = new Reboard();
-		reboard.setUserid(userid);
-		reboard.setSubject(subject);
-		reboard.setContent(content);
-		reboard.setBcode(Integer.parseInt(bcode));
-		reboard.setPseq(Integer.parseInt(seq));
-		reboard.setNotice("false");
-		//System.out.println(reboard);
-			
 		BoardDao boarddao = new BoardDao();
-		int result = boarddao.reWrite(reboard);
+		int btype = boarddao.btypeSel(Integer.parseInt(bcode));
+		int result = 0;
 		
 		String msg = "";
 		String url = "";
 		
+		//수정
+		Board board = new Board();
+		board.setSeq(Integer.parseInt(seq));
+		board.setSubject(subject);
+		board.setContent(content);
+		board.setClassify(classify);
+		board.setNotice(notice);
+		board.setBcode(Integer.parseInt(bcode));
+		//System.out.println(board);
+
+		result = boarddao.noticeEditOk(board);
+
 		if(result > 0 ) {
-			msg = "답글이 등록되었습니다.";
+			msg = "글이 수정되었습니다.";
 			url = "boardList.bdo?bcode="+bcode;
 		}else {		
-			msg = "글쓰기가 실패하였습니다. 다시 작성 부탁드립니다.";
-			url = "boardWrite.bdo";
+			msg = "글수정에 실패하였습니다. 다시 작성 부탁드립니다.";
+			url = "boardEdit.bdo?seq="+seq+"&bcode="+bcode;
 		}
 		
 		request.setAttribute("msg", msg);
