@@ -156,7 +156,7 @@
 				//console.log(bcode)
 				//console.log($(this).closest('div').find("input:eq(0)").val());
 				btype = $('#'+bcode).val()
-				ccode = $('#'+bcode+'c').val()
+				arcode = $('#'+bcode+'c').val()
 				//console.log(ccode);
 				
 				list(url,1,bcode);
@@ -165,21 +165,25 @@
 				if(bcode != 1){
 					$.ajax({
 						url : 'childListAjax.ch',
-						data : {"arcode" : ccode},
+						data : {"arcode" : arcode},
 						dataType : "json",
 						type : "get",
 						success : function(res){
-							console.log(res);
+							//console.log(res);
 							crname = "";
 							$('#crname').empty();
 							
 							var crname = '<th colspan="5"><select id="crname"><option value="">어린이집 선택</option>';
 							$.each(res, function(index, list) {
-								console.log(list.crname);	
-								crname += '<option value="'+list.crname+'">'+list.crname+'</option>';
+								//console.log(list.crname);	
+								crname += '<option value="'+list.stcode+'">'+list.crname+'</option>';
 							})
 							crname += "</select></th>";
 							$('#crname').append(crname);
+							
+							$('#crname').change(function() {
+								console.log($(this).val());
+							});//selete 이벤트
 						},
 						error : function(xhr){
 							console.log(xhr.status);
@@ -193,6 +197,7 @@
 				writebutton = "";
 				if((bcode == 1 && ${sessionScope.admin}==1) || (bcode != 1 && '${sessionScope.userid}' != null) ){
 					writebutton = '<form action="boardWrite.bdo" method="post" id="writefrom">'
+									+ '<input type="hidden" id="arcode" name="arcode" value="">'
 									+ '<input type="hidden" id="btype" name="btype" value="">'
 									+ '<input type="hidden" id="cp" name="cp" value="">'
 									+ '<input type="hidden" id="bcode" name="bcode" value="">'
@@ -203,7 +208,10 @@
 				
 				$('#write').click(function() {
 					console.log(bcode);
-					$('#btype').val(btype)
+					console.log(arcode);
+					
+					$('#arcode').val(arcode);
+					$('#btype').val(btype);
 					$('#bcode').val(bcode);
 					$('#cp').val(cp);
 				});//글쓰기 클릭 끝
@@ -308,6 +316,7 @@
 				<!-- 글쓰기 버튼-->
 					<c:if test="${(bcode == 1 && sessionScope.admin == 1) || (bcode != 1 && sessionScope.userid != null)}">
 						<form action="boardWrite.bdo" method="post" id="writefrom">
+							<input type="hidden" id="arcode" name="arcode" value="">
 							<input type="hidden" id="btype" name="btype" value="">
 							<input type="hidden" id="cp" name="cp" value="">
 							<input type="hidden" id="bcode" name="bcode" value="">

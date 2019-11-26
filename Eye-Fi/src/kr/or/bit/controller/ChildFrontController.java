@@ -13,6 +13,7 @@ import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.service.child.Child;
 import kr.or.bit.service.child.ChildContent;
+import kr.or.bit.service.child.Sidoname;
 
 @WebServlet("*.ch")
 public class ChildFrontController extends HttpServlet {
@@ -49,6 +50,16 @@ public class ChildFrontController extends HttpServlet {
 			//어린이집 상세보기
 			action = new ChildContent();
 			forward = action.execute(request, response);
+			
+		}else if( url_Command.equals("/sigun.ch")) {
+			//시군구 조회
+			action = new Sidoname();
+			forward = action.execute(request, response);
+			
+		}else if( url_Command.equals("/childChart.ch")) {
+			//차트화면
+			forward = new ActionForward();
+			forward.setPath("/WEB-INF/views/childChart.jsp");
 			
 		}
     	

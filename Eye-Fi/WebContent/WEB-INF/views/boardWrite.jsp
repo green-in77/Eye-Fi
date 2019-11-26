@@ -17,6 +17,7 @@
 	<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet">
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.js"></script>
 	
+	<c:set var="arcode" value="${requestScope.arcode}"/>
 	<script type="text/javascript">
 		$(function(){
 			
@@ -25,6 +26,29 @@
 				url : "http://api.childcare.go.kr/mediate/rest/cpmsapi030/cpmsapi030/request",
 				data : "key"
 			}); *///말머리 ajax 끝
+			$.ajax({
+				url : 'childListAjax.ch',
+				data : {"arcode" : '${arcode}'},
+				dataType : "json",
+				type : "get",
+				success : function(res){
+					console.log(res);
+					crname = "";
+					$('#crname').empty();
+					
+					var crname = '<option value="">어린이집 선택</option>';
+					$.each(res, function(index, list) {
+						console.log(list.crname);	
+						crname += '<option value="'+list.crname+'">'+list.crname+'</option>';
+					});
+					
+					$('#crname').append(crname);
+				},
+				error : function(xhr){
+					console.log(xhr.status);
+				}
+			});//외부데이터 끝
+			
 			
 			$('#summernote').summernote({
 				height : 300,
@@ -96,10 +120,26 @@
 					</div>
 					<div class="col-md-5" style="text-align:center;">
 						<!-- 게시판 종류 선택 -->
+						<!-- 관리자의 경우 공지사항 게시판까지 선택가능 / 일반회원의 경우 공지사항 보이지 않음 -->
 						<select class="btn btn-primary" id="board" name="bcode">
 							<option value="">게시판 선택</option>
 						<c:forEach var="board" items="${requestScope.boardList}">
-							<option value="${board.bcode}" <c:if test="${board.bcode == requestScope.bcode}">selected</c:if>>${board.bname}</option>
+							<c:choose>
+								<c:when test="${sessionScope.admin == 1}">
+									<option value="${board.bcode}" <c:if test="${board.bcode == requestScope.bcode}">selected</c:if>>${board.bname}</option>
+								</c:when>
+								<c:otherwise>
+									<c:choose>
+										<c:when test="${board.bcode == 1}">
+										</c:when>
+										<c:otherwise>
+											<option value="${board.bcode}" <c:if test="${board.bcode == requestScope.bcode}">selected</c:if>>${board.bname}</option>
+										</c:otherwise>
+									</c:choose>
+								</c:otherwise>
+							</c:choose>
+							
+							
 						</c:forEach>
 
 						</select>
@@ -108,9 +148,9 @@
 					<div class="col-md-5" style="text-align:center;">
 						<!-- 말머리 선택 -->
 						<c:if test="${requestScope.bcode != 1}">
-							<select class="btn btn-primary" id="stcode" name="classify">
-							<option value="">어린이집 선택</option>
-						</select>
+							<select class="btn btn-primary" id="crname" name="classify">
+							
+							</select>
 						</c:if>
 						
 					</div>

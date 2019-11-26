@@ -15,17 +15,19 @@ public class BoardWrite implements Action{
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
 		//1. 데이터 받기
+		String arcode = request.getParameter("arcode");
 		String bcode = request.getParameter("bcode");
 		String cp = request.getParameter("cp");
 		String btype = request.getParameter("btype");		
 		
 		//2. 데이터 확인
-		//System.out.println(bcode + " / " + cp + " / " + btype);
+		//System.out.println(bcode + " / " + cp + " / " + btype + " / " + arcode);
 			
 		//3.처리
 		BoardDao boarddao = new BoardDao();
 		List<Board_List> boardList = boarddao.listSel();
 		
+		request.setAttribute("arcode", arcode);
 		request.setAttribute("btype", btype);
 		request.setAttribute("bcode", bcode);
 		request.setAttribute("cp", cp);

@@ -12,6 +12,7 @@
 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5d00399e8d45fb8607fd0eec1c06e2ce"></script>
 	<c:set var="stcode" value="${requestScope.stcode}" />
+	<c:set var="arcode" value="${requestScope.arcode}" />
 	
 	<script type="text/javascript">
 	$(function(){
@@ -20,7 +21,7 @@
 		
 		$.ajax({
 			url : 'childListAjax.ch',
-			data : {"arcode" : 11260,
+			data : {"arcode" : ${arcode},
 					"stcode":${stcode}},
 			dataType : "json",
 			type : "get",

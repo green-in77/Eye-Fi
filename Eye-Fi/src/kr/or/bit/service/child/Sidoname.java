@@ -17,25 +17,13 @@ import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
 
 
-public class Child implements Action {
+public class Sidoname implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			String addr = "http://api.childcare.go.kr/mediate/rest/cpmsapi030/cpmsapi030/request?key=3cf25a2b59744f50a35d241f64ec6248&arcode=";
-			String arcode = request.getParameter("arcode");
+			String addr = "http://api.childcare.go.kr/mediate/rest/cpmsapi020/cpmsapi020/request?key=0e8f826ae4df4bc3bcdea31e05c417e2&arname=%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C";
 			
-			String stcode = request.getParameter("stcode");
-			
-			if(stcode == null) {
-				stcode = "";
-			}
-			
-			String parameter = "&stcode="+stcode;
-						
-			addr += arcode+parameter;
-			
-			// String urlStr = "접속할 url";
 			//System.out.println(addr);
 				   
 			URL url = new URL(addr);
@@ -61,16 +49,8 @@ public class Child implements Action {
 			in.close();
 			
 			//System.out.println(buffer);
-			JSONArray json = null;
-			JSONObject jsonobj = null;
-			
-			if(stcode == "") {
-				json = (JSONArray) new XMLSerializer().read(buffer);
-				request.setAttribute("child", json);
-			}else {
-				jsonobj = (JSONObject) new XMLSerializer().read(buffer);
-				request.setAttribute("child", jsonobj);
-			}
+			JSONArray json = (JSONArray) new XMLSerializer().read(buffer);
+			request.setAttribute("sigun", json);
 			
 			//System.out.println(json);
 		
@@ -79,7 +59,7 @@ public class Child implements Action {
 		}
 
 		ActionForward forward = new ActionForward();
-		forward.setPath("/WEB-INF/childAjaxJsp/child.jsp");
+		forward.setPath("/WEB-INF/childAjaxJsp/sigun.jsp");
 		
 		return forward;
 	}
