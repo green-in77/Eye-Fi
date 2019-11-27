@@ -19,15 +19,17 @@ public class RewriteOk implements Action{
 		String content = request.getParameter("content");
 		String bcode = request.getParameter("bcode");
 		String seq = request.getParameter("seq");
+		String classify = request.getParameter("classify");
 		
 		//2. 데이터 확인
-		//System.out.println(userid +"/"+ subject +"/"+ content +"/ bcode: "+ bcode + "/"+seq);
+		//System.out.println(userid +"/"+ subject +"/"+ content +"/ bcode: "+ bcode + "/"+seq + "/" + classify);
 		
 		//3. 처리
 		Reboard reboard = new Reboard();
 		reboard.setUserid(userid);
 		reboard.setSubject(subject);
 		reboard.setContent(content);
+		reboard.setClassify(classify);
 		reboard.setBcode(Integer.parseInt(bcode));
 		reboard.setPseq(Integer.parseInt(seq));
 		reboard.setNotice("false");

@@ -20,25 +20,31 @@
 		<c:set var="bcode" value="1"/>	
 	</c:if>
 	
+	<c:set var = "arcode" value="${requestScope.arcode}" />
+	
 	<script type="text/javascript">
+		var cp = ${cp};
+		
+		var bcode = ${bcode};
+		var boardlist = "";
+		var btype=1
+		
+		var url = "boardListOk.bdo";
+		var counturl = "boardTotalCount.bdo";
+		
 		$(function(){			
-			var cp = ${cp};
 			
-			var bcode = ${bcode};
-			var boardlist = "";
-			
-			var url = "boardListOk.bdo";
-			var counturl = "boardTotalCount.bdo";
-			list(url,cp, bcode);
+			list(url,cp, bcode,btype);
 			totalcount(counturl,bcode);
 
 			//회원리스트 관련
-			function list(url,cp,bcode){
+			function list(url,cp,bcode,btype,classify){
 				$.ajax({ //리스트 비동기 조회
 					url : url,
 					data : {
 						"cp" : cp,
-						"bcode" : bcode
+						"bcode" : bcode,
+						"classify" : classify
 					},
 					dataType: "JSON",
 					type: "POST",
@@ -51,22 +57,23 @@
 						if(list != ""){
 							//console.log(list[0].bcode);
 							
-							if(list[0].bcode == 1){
+							//공지게시판 타입
+							if(btype == 1){
 								$.each(list, function(index, board){
 									//console.log(board);
 									boardlist += '<tr>'
-													+'<td>'+board.seq+'</td>'
-													+'<td><a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'">'+board.subject+'</td>'
+													+'<td><a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'&btype='+btype+'">'+board.subject+'</td>'
 													+'<td>'+board.userid+'</td>'
 													+'<td>'+board.logtime+'</td>'
 													+'<td>'+board.hit+'</td>'
 												  +'</tr>'
 								});//each 끝
 								
-							} if(list[0].bcode == 2){
+							//일반게시판 타입
+							}else if(btype == 2){
 								$.each(list, function(index, board){
 									boardlist += '<tr>'
-													+'<td>'+board.seq+'</td>'
+													+'<td>'+board.classify+'</td>'
 													+'<td style="text-align:left;">';
 										
 									for(var i = 1 ;i<=board.depth;i++){
@@ -77,7 +84,29 @@
 										}
 									}
 									
-									boardlist += 	'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'">'+board.subject+'</td>'
+									boardlist += 	'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'&btype='+btype+'">'+board.subject+'</td>'
+													+'<td>'+board.userid+'</td>'
+													+'<td>'+board.logtime+'</td>'
+													+'<td>'+board.hit+'</td>'
+								  				+'</tr>'
+								});//each 끝
+							
+							//앨범게시판 타입
+							}else if(btype == 3){
+								$.each(list, function(index, board){
+									boardlist += '<tr>'
+													+'<td>'+board.classify+'</td>'
+													+'<td style="text-align:left;">';
+										
+									for(var i = 1 ;i<=board.depth;i++){
+										boardlist += '&nbsp;&nbsp;&nbsp';
+										
+										if(board.depth>0){
+											boardlist += '<img src = "${pageContext.request.contextPath}/assets/img/re.gif">';
+										}
+									}
+									
+									boardlist += 	'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'&btype='+btype+'">'+board.subject+'</td>'
 													+'<td>'+board.userid+'</td>'
 													+'<td>'+board.logtime+'</td>'
 													+'<td>'+board.hit+'</td>'
@@ -137,8 +166,8 @@
 							}else {
 								cp = (cur);
 							}
-							console.log(cp);
-							console.log(bcode);
+							//console.log(cp);
+							//console.log(bcode);
 							
 							list(url,cp,bcode);
 						});
@@ -149,6 +178,19 @@
 				});//ajax 끝
 			}//totalcount 끝
 			
+			$('#write').click(function() {
+				//console.log(bcode);
+				//console.log(arcode);
+				
+				if('${arcode}' == ""){
+					$('#arcode').val(arcode);	
+				}
+				
+				$('#btype').val(btype);
+				$('#bcode').val(bcode);
+				$('#cp').val(cp);
+			});//글쓰기 클릭 끝
+			
 			$('.boardmove').click(function() {
 				//console.log($(this));
 				//console.log(url);
@@ -157,9 +199,10 @@
 				//console.log($(this).closest('div').find("input:eq(0)").val());
 				btype = $('#'+bcode).val()
 				arcode = $('#'+bcode+'c').val()
-				//console.log(ccode);
+				//console.log(btype);
 				
-				list(url,1,bcode);
+				
+				list(url,1,bcode,btype);
 				totalcount(counturl,bcode);
 				
 				if(bcode != 1){
@@ -173,22 +216,28 @@
 							crname = "";
 							$('#crname').empty();
 							
-							var crname = '<th colspan="5"><select id="crname"><option value="">어린이집 선택</option>';
+							var crname = '<th colspan="5"><select id="stcode"><option value="">어린이집 선택</option>';
 							$.each(res, function(index, list) {
 								//console.log(list.crname);	
-								crname += '<option value="'+list.stcode+'">'+list.crname+'</option>';
+								crname += '<option value="'+list.crname+'">'+list.crname+'</option>';
 							})
 							crname += "</select></th>";
 							$('#crname').append(crname);
 							
-							$('#crname').change(function() {
-								console.log($(this).val());
+							$('#stcode').change(function() {
+								var classify = $(this).val();
+								list(url,cp, bcode, classify);
 							});//selete 이벤트
 						},
 						error : function(xhr){
 							console.log(xhr.status);
 						}
 					});//외부데이터 끝
+					$('#classify').remove();
+					$('#head th:first-child').before("<th id='classify'>어린이집 구분</th>")
+				}else {
+					$('#crname').empty();
+					$('#classify').remove();;
 				}
 				
 				$('#writebutton').empty();
@@ -207,10 +256,13 @@
 				$('#writebutton').append(writebutton);
 				
 				$('#write').click(function() {
-					console.log(bcode);
-					console.log(arcode);
+					//console.log(bcode);
+					//console.log(arcode);
 					
-					$('#arcode').val(arcode);
+					if('${arcode}' == ""){
+						$('#arcode').val(arcode);	
+					}
+					
 					$('#btype').val(btype);
 					$('#bcode').val(bcode);
 					$('#cp').val(cp);
@@ -282,8 +334,7 @@
 								<table class="table table-hover">
 									<thead>
 										<tr id="crname"></tr>
-										<tr>
-											<th>#</th>
+										<tr id="head">
 											<th>글제목</th>
 											<th>작성자</th>
 											<th>작성일</th>
@@ -316,7 +367,7 @@
 				<!-- 글쓰기 버튼-->
 					<c:if test="${(bcode == 1 && sessionScope.admin == 1) || (bcode != 1 && sessionScope.userid != null)}">
 						<form action="boardWrite.bdo" method="post" id="writefrom">
-							<input type="hidden" id="arcode" name="arcode" value="">
+							<input type="hidden" id="arcode" name="arcode" value="${arcode}">
 							<input type="hidden" id="btype" name="btype" value="">
 							<input type="hidden" id="cp" name="cp" value="">
 							<input type="hidden" id="bcode" name="bcode" value="">

@@ -16,6 +16,7 @@ public class Rewrite implements Action{
 		String bcode = request.getParameter("bcode").trim();
 		String cp = request.getParameter("cp").trim();
 		String content = request.getParameter("content");
+		String classify = request.getParameter("classify");
 		
 		String url = "/WEB-INF/views/boardRewrite.jsp";
 		
@@ -23,6 +24,7 @@ public class Rewrite implements Action{
 			url = "boardListOk.bdo";
 		}
 		
+		request.setAttribute("classify", classify);
 		request.setAttribute("content", content);
 		request.setAttribute("seq", seq);
 		request.setAttribute("subject", subject);

@@ -15,7 +15,11 @@ public class MemberListOk implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
+		String search = request.getParameter("search");
+		String searchtag = request.getParameter("searchtag");
 		String cp = request.getParameter("cp");
+		
+		//System.out.println("cp : " + cp +" search : " + search + " searchtag : " + searchtag);
 		
 		if(cp == null || cp.trim().equals("") || cp.equals("null")){
 			//default 값 설정
@@ -23,7 +27,22 @@ public class MemberListOk implements Action {
 		}
 		
 		MemberDao memberdao = new MemberDao();
-		List<Member> memberList = memberdao.selectAll(Integer.parseInt(cp));
+		List<Member> memberList = null;
+		
+		if(searchtag == null) {
+			memberList = memberdao.selectAll(Integer.parseInt(cp));
+			
+		}else if(searchtag.equals("idemail")) {
+			memberList = memberdao.selectIdEmail(Integer.parseInt(cp), search);
+			
+		}else if(searchtag.equals("admin")) {
+			memberList = memberdao.selectAdmin(Integer.parseInt(cp),search);
+			
+		}else if(searchtag.equals("code")) {
+			memberList = memberdao.selectCode(Integer.parseInt(cp),search);
+			
+		}
+		
 		
 		JSONArray memberListJson = JSONArray.fromObject(memberList);
 		

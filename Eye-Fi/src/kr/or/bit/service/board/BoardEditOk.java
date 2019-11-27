@@ -17,12 +17,11 @@ public class BoardEditOk implements Action{
 		String seq = request.getParameter("seq");
 		String subject = request.getParameter("subject");
 		String content = request.getParameter("content");
-		String classify = request.getParameter("classify");
 		String notice = request.getParameter("notice");
 		String bcode = request.getParameter("bcode");
 		
 		//2. 데이터 확인
-		//System.out.println(seq + " / " + subject +"/"+ content +"/"+ classify +"/"+ notice +"/ bcode: "+ bcode);
+		//System.out.println(seq + " / " + subject +"/"+ content +"/"+ notice +"/ bcode: "+ bcode);
 		
 		if(notice == null) {
 			notice = "false";
@@ -41,7 +40,6 @@ public class BoardEditOk implements Action{
 		board.setSeq(Integer.parseInt(seq));
 		board.setSubject(subject);
 		board.setContent(content);
-		board.setClassify(classify);
 		board.setNotice(notice);
 		board.setBcode(Integer.parseInt(bcode));
 		//System.out.println(board);

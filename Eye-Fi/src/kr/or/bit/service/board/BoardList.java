@@ -19,6 +19,7 @@ public class BoardList implements Action {
 		//1.데이터 받기
 		String cp = request.getParameter("cp");
 		String bcode = request.getParameter("bcode");
+		String arcode = request.getParameter("arcode");
 				
 		//System.out.println("cp : " + cp + " / bcode : " + bcode);
 		
@@ -33,6 +34,7 @@ public class BoardList implements Action {
 		request.setAttribute("typeList", typeList);
 		request.setAttribute("cateList", cateList);
 		
+		request.setAttribute("arcode", arcode);
 		request.setAttribute("cp", cp);
 		request.setAttribute("bcode", bcode);
 		

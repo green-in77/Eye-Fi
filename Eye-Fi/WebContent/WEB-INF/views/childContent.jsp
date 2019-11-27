@@ -3,8 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:import url="../common/member.jsp" />
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -35,7 +33,7 @@
 				$('#craddr').text(list.item.craddr);
 				$('#chcrtescnt').text(list.item.chcrtescnt);
 				$('#cntpat').text(list.item.crchcnt+"/"+list.item.crcapat);
-				$('#crhome').text(list.item.crhome);
+				$('#crhome').html("<a href='"+list.item.crhome+"' target=_blank>"+list.item.crhome+"</a>");
 				$('#crcargbname').text(list.item.crcargbname);
 				$('#crabldt').text(list.item.crabldt);
 				$('#datastdrdt').text("기준일자 : "+list.item.datastdrdt);

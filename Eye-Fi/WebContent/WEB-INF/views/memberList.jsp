@@ -9,7 +9,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<c:import url="../common/top.jsp" />
-
     <div class="content-wrapper text-center margin-top0" style="background-image: url('${pageContext.request.contextPath}/assets/img/background.jpg');">
 		<!-- 여기부터 -->
 		<div class="container">
@@ -19,11 +18,19 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-8" style="text-align:right;">
+				<div class="col-md-7" style="text-align:right;">
 					
 				</div>
-				<div class="col-md-3" style="text-align:right;">
-					<input type="text" class="form-control" id="search" name="search" style="width: 100%">
+				<div class="col-md-2" style="text-align:right;">
+					<select id="searchtag">
+						<option value="all">검색기준</option>
+						<option value="idemail">아이디 또는 이메일</option>
+						<option value="admin">회원등급</option>
+						<option value="code">활동여부</option>
+					</select>
+				</div>
+				<div class="col-md-2" style="text-align:right;" id="searchspace">
+					<input type="text" class="form-control" id="search" name="search" style="width: 100%" readonly>
 				</div>
 				<div class="col-md-1" style="text-align:right;">
 					<a id="searchsubmit"><i class="fa fa-search" style="font-size:2.3vw;"></i></a>
@@ -41,7 +48,7 @@
 											<th>아이디</th>
 											<th>비밀번호</th>
 											<th>이메일</th>
-											<th>관리자</th>
+											<th>회원등급</th>
 											<th>활동여부</th>
 											<th colspan="2">회원관리</th>
 										</tr>
@@ -71,19 +78,61 @@
 <script type="text/javascript">
 	$(function(){
 		var cp = 1;
-		var cp = {"cp" : 1};
+		var cp = 1;
 		var memberlist = "";
 		var url = "memberListOk.do";
 		var codelist = "";
+		var search;
+		var searchtag; 
 		
 		list(url,cp);
 		totalcount("memberTotalCount.do");
+		
+		$('#searchtag').change(function() {
+			console.log($(this).val());
 			
+			if($(this).val() == "idemail"){
+				$('#searchspace').empty();
+				var search = '<input type="text" class="form-control" id="search" name="search" style="width: 100%">'
+				$('#searchspace').append(search);
+				
+			}else if($(this).val() == "admin"){
+				$('#searchspace').empty();
+				var search = '<select id="search"><option value="0">일반회원</option><option value="1">관리자</option></select>';
+				$('#searchspace').append(search);
+				
+			}else if($(this).val() == "code"){
+				$('#searchspace').empty();
+				//console.log(codelist);
+				var search = '<select id="search">'+codelist+'</select>';
+				$('#searchspace').append(search);
+				
+			}else if($(this).val() == "all"){
+				$('#searchspace').empty();
+				var search = '<input type="text" class="form-control" id="search" name="search" style="width: 100%" readonly>'
+				$('#searchspace').append(search);
+				list(url,1);
+				totalcount("memberTotalCount.do");
+			}
+
+		});//검색태그 change 끝
+		
+		$('#searchsubmit').click(function() {
+			//console.log($('#search').val());
+			//console.log($('#searchtag').val());
+			
+			search = $('#search').val()
+			searchtag = $('#searchtag').val();
+			list(url,1,search,searchtag);
+			totalcount("memberTotalCount.do",search,searchtag);
+			
+		})
+		
 		//회원리스트 관련
-		function list(url,cp){
+		function list(url,cp,search,searchtag){
 			$.ajax({ //리스트 비동기 조회
 				url : url,
-				data : cp,
+				data : {"cp":cp,"search":search,"searchtag":searchtag},
 				dataType: "JSON",
 				type: "POST",
 				success: function(list){
@@ -192,14 +241,16 @@
 								data : editdata,
 								success: function(){
 									//console.log(cp);
-									list(url,cp);
+									list(url,cp,search,searchtag);
+									totalcount("memberTotalCount.do",search,searchtag);
 								}
 							});
 						});//수정완료 클릭이벤트 끝
 						
 						//취소버튼 클릭시
 						$('.cancel').click(function() {
-							list(url,cp);
+							list(url,cp,search,searchtag);
+							totalcount("memberTotalCount.do",search,searchtag);
 						});
 					},
 					error : function(xhr){
@@ -210,10 +261,10 @@
 		}//함수끝	
 //////---------------------------------------------------------------------------------------------------------------------			
 			//페이징처리
-			function totalcount(totalcount,total){
+			function totalcount(totalcount,search,searchtag){
 				$.ajax({
 					url:totalcount,
-					data : total,
+					data : {"search":search,"searchtag":searchtag},
 					dataType: "text",
 					type:"POST",
 					success: function(count){
@@ -241,15 +292,15 @@
 							//console.log(cur);
 							
 							if(cur == "처음"){
-								cp = {"cp":1};
+								cp = 1;
 							}else if(cur == "마지막"){
-								cp = {"cp":count};
+								cp = count;
 							}else {
-								cp = {"cp":(cur)};
+								cp = (cur);
 							}
 							//console.log(cp);
 							
-							list(url,cp);
+							list(url,cp,search,searchtag);
 						});
 					},
 					error : function(xhr){

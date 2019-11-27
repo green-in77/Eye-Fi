@@ -19,6 +19,7 @@ public class BoardListOk implements Action {
 		//1. 데이터 받기
 		String bcode = request.getParameter("bcode");
 		String cp = request.getParameter("cp");
+		String classify = request.getParameter("classify");
 		
 		if(cp == null || cp.trim().equals("") || cp.equals("null")){
 			//default 값 설정
@@ -26,19 +27,24 @@ public class BoardListOk implements Action {
 		}
 		
 		//2. 데이터 확인
-		//System.out.println("bcode : " + bcode + "cp : " + cp);
+		//System.out.println("bcode : " + bcode + "cp : " + cp + "classify : " +classify);
 		
 		BoardDao boarddao = new BoardDao();
 		int btype = boarddao.btypeSel(Integer.parseInt(bcode));
 		JSONArray boardlistJson = null;
 		
-		if( btype == 1 ) {
+		if( btype == 1 || btype == 3 ) {
 			List<Board> boardlist = boarddao.noticeboardList(Integer.parseInt(cp), Integer.parseInt(bcode));
 			boardlistJson = JSONArray.fromObject(boardlist);
 		} else if( btype == 2) {
-			List<Reboard> boardlist = boarddao.boardList(Integer.parseInt(cp), Integer.parseInt(bcode));
-			//System.out.println(boardlist);
-			boardlistJson = JSONArray.fromObject(boardlist);	
+			if(classify == null || classify == "") {
+				List<Reboard> boardlist = boarddao.boardList(Integer.parseInt(cp), Integer.parseInt(bcode));
+				//System.out.println(boardlist);
+				boardlistJson = JSONArray.fromObject(boardlist);
+			}else {
+				List<Reboard> boardlist = boarddao.classifyboardList(Integer.parseInt(cp), Integer.parseInt(bcode),classify);
+				boardlistJson = JSONArray.fromObject(boardlist);
+			}
 		}
 		
 		request.setAttribute("boardlist", boardlistJson);

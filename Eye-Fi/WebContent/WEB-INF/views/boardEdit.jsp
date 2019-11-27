@@ -95,24 +95,39 @@
 					</div>
 					<div class="col-md-5" style="text-align:center;">
 						<!-- 게시판 종류 선택 -->
+						<!-- 관리자의 경우 공지사항 게시판까지 선택가능 / 일반회원의 경우 공지사항 보이지 않음 -->
 						<select class="btn btn-primary" id="board" name="bcode">
 							<option value="">게시판 선택</option>
-						<c:forEach var="boardlist" items="${requestScope.boardList}">
-							<option value="${boardlist.bcode}" <c:if test="${boardlist.bcode == board.bcode}">selected</c:if>>${boardlist.bname}</option>
+						<c:forEach var="board" items="${requestScope.boardList}">
+							<c:choose>
+								<c:when test="${sessionScope.admin == 1}">
+									<option value="${board.bcode}" <c:if test="${board.bcode == requestScope.bcode}">selected</c:if>>${board.bname}</option>
+								</c:when>
+								<c:otherwise>
+									<c:choose>
+										<c:when test="${board.bcode == 1}">
+										</c:when>
+										<c:otherwise>
+											<option value="${board.bcode}" <c:if test="${board.bcode == requestScope.bcode}">selected</c:if>>${board.bname}</option>
+										</c:otherwise>
+									</c:choose>
+								</c:otherwise>
+							</c:choose>
+
 						</c:forEach>
 
 						</select>
 					</div>
-					
 					<div class="col-md-5" style="text-align:center;">
 						<!-- 말머리 선택 -->
-						<c:if test="${board.bcode != 1}">
-							<select class="btn btn-primary" id="stcode" name="classify">
-							<option value="">어린이집 선택</option>
-						</select>
+						<c:if test="${requestScope.bcode != 1}">
+							<span class="btn btn-primary" id="crname" name="classify">
+								${board.classify}
+							</span>
 						</c:if>
 						
 					</div>
+					
 				</div>
 				
 				<div class="row">

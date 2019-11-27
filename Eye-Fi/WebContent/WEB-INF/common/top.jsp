@@ -273,6 +273,7 @@
                             	<c:when test="${sessionScope.admin == 1}">
                             		<!-- <li><a href="noticeboardList.bdo">공지사항</a></li> -->
                             		<li><a href="boardList.bdo">게시판</a></li>
+                            		<li><a href="boardCreate.bdo">게시판관리</a></li>
                             		<li><a href="memberList.do">회원관리</a></li>
                             		<li><a href="logout.do">로그아웃</a></li>
                             	</c:when>

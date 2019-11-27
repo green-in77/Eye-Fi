@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.dao.BoardDao;
+import kr.or.bit.dto.board.Album;
 import kr.or.bit.dto.board.Board;
 
 public class NoticeboardContent implements Action{
@@ -16,6 +17,7 @@ public class NoticeboardContent implements Action{
 		String cp = request.getParameter("cp");
 		String bcode = request.getParameter("bcode");
 		String seq = request.getParameter("seq").trim();
+		String btype = request.getParameter("btype");
 		
 		//2. 데이터 확인
 		//System.out.println("bcode : " + bcode + "/seq : " + seq + "/cp : "+cp);
@@ -26,9 +28,15 @@ public class NoticeboardContent implements Action{
 			BoardDao boarddao = new BoardDao();
 			boarddao.hitAdd(seq);
 			
-			Board board = boarddao.boardContent(Integer.parseInt(seq));
-			
-			request.setAttribute("board", board);
+			if(btype.equals("3")) {
+				Album album = boarddao.albumContent(Integer.parseInt(seq));
+				request.setAttribute("board", album);
+			}else {
+				Board board = boarddao.boardContent(Integer.parseInt(seq));
+				request.setAttribute("board", board);
+			}
+
+			request.setAttribute("btype", btype);
 			request.setAttribute("cp", cp);
 			
 			url="/WEB-INF/views/noticeboardContent.jsp";

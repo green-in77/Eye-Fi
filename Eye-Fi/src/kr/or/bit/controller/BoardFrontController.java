@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.service.board.BoardCreate;
+import kr.or.bit.service.board.BoardCreateOk;
 import kr.or.bit.service.board.BoardDelete;
 import kr.or.bit.service.board.BoardEdit;
 import kr.or.bit.service.board.BoardEditOk;
@@ -46,10 +47,15 @@ public class BoardFrontController extends HttpServlet {
 		Action action = null; //action인터페이스를 사용하는 모든 자식객체(service)의 주소를 가질 수 있다.
 
 		if( url_Command.equals("/boardCreate.bdo")) {//기술미구현
-			//게시판생성
+			//게시판생성 화면
 			action = new BoardCreate();
 			forward = action.execute(request, response);
 			
+		}else if( url_Command.equals("/boardCreateOk.bdo")) {
+			//게시판 생성 로직
+			action = new BoardCreateOk();
+			forward = action.execute(request, response);
+				
 		}else if( url_Command.equals("/boardWrite.bdo")) {//완료
 			//게시판 글쓰기 화면
 			action = new BoardWrite();

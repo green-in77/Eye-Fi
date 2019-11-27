@@ -91,7 +91,7 @@
 											<td><input type="text" class="form-control" id="subject" name="subject"/ value="[RE]${requestScope.subject}"></td>
 										</tr>
 										<tr>
-											<td colspan="2"><textarea rows="10" cols="60" name="content" id ="summernote">원본글<br>${requestScope.content}-----------<br></textarea></td>
+											<td colspan="2"><textarea rows="10" cols="60" name="content" id ="summernote">원본글<br>${requestScope.content}<hr><br><br></textarea></td>
 										</tr>
 									</table>
 								</div>
@@ -100,6 +100,7 @@
 	
 						<div class="row">
 							<div class="col-md-12" style="text-align:center;">
+								<input type="hidden" name="classify" value="${requestScope.classify}">
 								<input type="hidden" name="seq" value="${requestScope.seq}">
 								<input type="hidden" name="userid" value="${sessionScope.userid}">
 								<input type="hidden" name="bcode" value="${requestScope.bcode}">

@@ -13,6 +13,7 @@
     <div class="content-wrapper text-center margin-top0" style="background-image: url('${pageContext.request.contextPath}/assets/img/background.jpg');">
 		<!-- 여기부터 -->
 		<c:set var = "board" value="${requestScope.board}" />
+		<c:set var = "btype" value="${requestScope.btype}" />
 		
 		<div class="container">
 			<div class="row">
@@ -43,6 +44,13 @@
 										<td>${board.logtime}</td>
 										<td>${board.hit}</td>
 									</tr>
+									<c:if test="${btype == 3}">
+										<tr>
+											<td colspan="3">
+												<img src="board_img/${board.save_file}" style="max-width: 30rem;" class="img-fluid rounded-circle shadow">
+											</td>
+										</tr>
+									</c:if>
 									<tr>
 										<td colspan="3">${board.content}</td>
 									</tr>
@@ -53,7 +61,7 @@
 					<div class="row">
 						<c:if test="${board.userid == sessionScope.userid || sessionScope.admin == 1}">
 						
-							<div class="col-md-3" style="text-align : right;">
+							<div class="col-md-3" style="text-align : center;">
 								<form action="boardEdit.bdo" method="post">
 									<input type="hidden" name="seq" value="${board.seq}">
 									<input type="hidden" name="bcode" value="${board.bcode}">
@@ -62,7 +70,7 @@
 								</form>	
 							</div>
 							
-							<div class="col-md-3" style="text-align : right;">
+							<div class="col-md-3" style="text-align : center;">
 								<form action="boardDelete.bdo" method="post" >
 									<input type="hidden" name="seq" value="${board.seq}">
 									<input type="hidden" name="bcode" value="${board.bcode}">
@@ -71,9 +79,10 @@
 								</form>	
 							</div>
 						</c:if>
-						<div class="col-md-3" style="text-align : right;">
-							<c:if test="${board.bcode != 1}">
+						<div class="col-md-3" style="text-align : center;">
+							<c:if test="${btype == 2}">
 								<form action="boardRewrite.bdo" method="post" >
+									<input type="hidden" name="classify" value="${board.classify}">
 									<input type="hidden" name="content" value="${board.content}">
 									<input type="hidden" name="subject" value="${board.subject}">
 									<input type="hidden" name="seq" value="${board.seq}">
@@ -84,7 +93,7 @@
 							</c:if>
 						</div>
 						
-						<div class="col-md-3" style="text-align:left;">
+						<div class="col-md-3" style="text-align:center;">
 							<form action="boardList.bdo" method="post">
 								<input type="hidden" name="bcode" value="${board.bcode}">
 								<input type="hidden" name="cp" value="${requestScope.cp}">
