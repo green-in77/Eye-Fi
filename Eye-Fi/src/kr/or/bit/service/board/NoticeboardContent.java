@@ -18,12 +18,15 @@ public class NoticeboardContent implements Action{
 		String bcode = request.getParameter("bcode");
 		String seq = request.getParameter("seq").trim();
 		String btype = request.getParameter("btype");
+		String arcode = request.getParameter("arcode");
 		
 		//2. 데이터 확인
-		//System.out.println("bcode : " + bcode + "/seq : " + seq + "/cp : "+cp);
+		System.out.println("bcode : " + bcode + "/seq : " + seq + "/cp : "+cp + " / arcode : " + arcode);
+		
 		String url = "";
 		if( seq == null || seq.equals("")){
 			url="noticeboardList.bdo?bcode="+bcode; //돌아갈 경우 왔던 게시판의 1페이지로..
+			
 		}else {
 			BoardDao boarddao = new BoardDao();
 			boarddao.hitAdd(seq);
@@ -36,6 +39,7 @@ public class NoticeboardContent implements Action{
 				request.setAttribute("board", board);
 			}
 
+			request.setAttribute("arcode", arcode);
 			request.setAttribute("btype", btype);
 			request.setAttribute("cp", cp);
 			

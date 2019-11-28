@@ -17,7 +17,9 @@ public class Rewrite implements Action{
 		String cp = request.getParameter("cp").trim();
 		String content = request.getParameter("content");
 		String classify = request.getParameter("classify");
-		
+		String btype = request.getParameter("btype");
+		String arcode = request.getParameter("arcode");
+
 		String url = "/WEB-INF/views/boardRewrite.jsp";
 		
 		if(seq == null || subject == null || subject.trim().equals("")) {
@@ -30,6 +32,8 @@ public class Rewrite implements Action{
 		request.setAttribute("subject", subject);
 		request.setAttribute("bcode", bcode);
 		request.setAttribute("cp", cp);
+		request.setAttribute("btype", btype);
+		request.setAttribute("arcode", arcode);
 		
 		ActionForward forward = new ActionForward();
 		forward.setPath(url);

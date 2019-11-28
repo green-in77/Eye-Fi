@@ -1075,7 +1075,7 @@ html {
 }
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 20px;
   line-height: 1.42857143;
   color: #8286B0;
   background-color: #fff;
@@ -2253,6 +2253,7 @@ th {
   padding: 8px;
   line-height: 1.42857143;
   border-top: 1px solid #ddd;
+  font-size: 17px;
 }
 .table > thead > tr > th {
   vertical-align: bottom;
@@ -3370,6 +3371,7 @@ input[type="button"].btn-block {
   visibility: hidden;
 }
 .collapse.in {
+  font-size : 17px;
   display: block;
   visibility: visible;
 }
@@ -5311,7 +5313,7 @@ a.list-group-item-danger.active:focus {
 .panel-title {
   margin-top: 0;
   margin-bottom: 0;
-  font-size: 16px;
+  font-size: 18px;
   color: inherit;
 }
 .panel-title > a,

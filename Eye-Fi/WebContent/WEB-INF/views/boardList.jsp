@@ -22,23 +22,37 @@
 	
 	<c:set var = "arcode" value="${requestScope.arcode}" />
 	
+	<c:set var = "btype" value="${requestScope.btype}" />
+		<c:if test="${btype == null }">
+		<c:set var="btype" value="1"/>	
+	</c:if>
+	
 	<script type="text/javascript">
 		var cp = ${cp};
 		
 		var bcode = ${bcode};
 		var boardlist = "";
-		var btype=1
+		var btype= ${btype};
+		var arcode = '${arcode}';
 		
 		var url = "boardListOk.bdo";
 		var counturl = "boardTotalCount.bdo";
 		
 		$(function(){			
+			//console.log("arcode : " + arcode);
 			
 			list(url,cp, bcode,btype);
 			totalcount(counturl,bcode);
-
+			childListAjax(btype,arcode);
+			
 			//회원리스트 관련
 			function list(url,cp,bcode,btype,classify){
+				//console.log("list시작");
+				//console.log(cp);
+				//console.log(bcode);
+				//console.log(btype);
+				//console.log(classify);
+				
 				$.ajax({ //리스트 비동기 조회
 					url : url,
 					data : {
@@ -78,13 +92,13 @@
 										
 									for(var i = 1 ;i<=board.depth;i++){
 										boardlist += '&nbsp;&nbsp;&nbsp';
-										
-										if(board.depth>0){
-											boardlist += '<img src = "${pageContext.request.contextPath}/assets/img/re.gif">';
-										}
 									}
 									
-									boardlist += 	'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'&btype='+btype+'">'+board.subject+'</td>'
+									if(board.depth>0){
+										boardlist += '<img src = "${pageContext.request.contextPath}/assets/img/re.gif">';
+									}
+									
+									boardlist += 	'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'&btype='+btype+'&arcode='+arcode+'">'+board.subject+'</td>'
 													+'<td>'+board.userid+'</td>'
 													+'<td>'+board.logtime+'</td>'
 													+'<td>'+board.hit+'</td>'
@@ -106,7 +120,7 @@
 										}
 									}
 									
-									boardlist += 	'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'&btype='+btype+'">'+board.subject+'</td>'
+									boardlist += 	'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'&btype='+btype+'&arcode='+arcode+'">'+board.subject+'</td>'
 													+'<td>'+board.userid+'</td>'
 													+'<td>'+board.logtime+'</td>'
 													+'<td>'+board.hit+'</td>'
@@ -127,11 +141,11 @@
 			};//list function 끝
 			
 			//페이징처리
-			function totalcount(totalcount,bcode){
+			function totalcount(totalcount,bcode,classify){
 				//console.log(bcode);
 				$.ajax({
 					url:totalcount,
-					data : {"bcode" : bcode},
+					data : {"bcode" : bcode, "classify" : classify},
 					dataType: "text",
 					type:"POST",
 					success: function(count){
@@ -169,7 +183,7 @@
 							//console.log(cp);
 							//console.log(bcode);
 							
-							list(url,cp,bcode);
+							list(url,cp, bcode,btype,classify);
 						});
 					},
 					error : function(xhr){
@@ -205,46 +219,14 @@
 				list(url,1,bcode,btype);
 				totalcount(counturl,bcode);
 				
-				if(bcode != 1){
-					$.ajax({
-						url : 'childListAjax.ch',
-						data : {"arcode" : arcode},
-						dataType : "json",
-						type : "get",
-						success : function(res){
-							//console.log(res);
-							crname = "";
-							$('#crname').empty();
-							
-							var crname = '<th colspan="5"><select id="stcode"><option value="">어린이집 선택</option>';
-							$.each(res, function(index, list) {
-								//console.log(list.crname);	
-								crname += '<option value="'+list.crname+'">'+list.crname+'</option>';
-							})
-							crname += "</select></th>";
-							$('#crname').append(crname);
-							
-							$('#stcode').change(function() {
-								var classify = $(this).val();
-								list(url,cp, bcode, classify);
-							});//selete 이벤트
-						},
-						error : function(xhr){
-							console.log(xhr.status);
-						}
-					});//외부데이터 끝
-					$('#classify').remove();
-					$('#head th:first-child').before("<th id='classify'>어린이집 구분</th>")
-				}else {
-					$('#crname').empty();
-					$('#classify').remove();;
-				}
+				childListAjax(btype,arcode);
+				
 				
 				$('#writebutton').empty();
 				//console.log(bcode == 1 && ${sessionScope.admin}==1);
 				//console.log(bcode != 1 && '${sessionScope.userid}' != null);
 				writebutton = "";
-				if((bcode == 1 && ${sessionScope.admin}==1) || (bcode != 1 && '${sessionScope.userid}' != null) ){
+				if((btype == 1 && ${sessionScope.admin}==1) || (btype != 1 && '${sessionScope.userid}' != null) ){
 					writebutton = '<form action="boardWrite.bdo" method="post" id="writefrom">'
 									+ '<input type="hidden" id="arcode" name="arcode" value="">'
 									+ '<input type="hidden" id="btype" name="btype" value="">'
@@ -266,10 +248,51 @@
 					$('#btype').val(btype);
 					$('#bcode').val(bcode);
 					$('#cp').val(cp);
+
 				});//글쓰기 클릭 끝
 				
 			});//게시판이동 클릭 끝
-	
+			
+			function childListAjax(btype,arcode){
+				if(btype != 1){
+					$.ajax({
+						url : 'childListAjax.ch',
+						data : {"arcode" : arcode},
+						dataType : "json",
+						type : "get",
+						success : function(res){
+							//console.log(res);
+							crname = "";
+							$('#crname').empty();
+							
+							var crname = '<th colspan="5"><select id="stcode"><option value="">어린이집 선택</option>';
+							$.each(res, function(index, list) {
+								//console.log(list.crname);	
+								crname += '<option value="'+list.crname+'">'+list.crname+'</option>';
+							})
+							crname += "</select></th>";
+							$('#crname').append(crname);
+							
+							$('#stcode').change(function() {
+								var classify = $(this).val();
+								console.log(classify);
+								list(url, 1, bcode, btype, classify);
+								totalcount(counturl,bcode,classify);
+								
+							});//selete 이벤트
+						},
+						error : function(xhr){
+							console.log(xhr.status);
+						}
+					});//외부데이터 끝
+					$('#classify').remove();
+					$('#head th:first-child').before("<th id='classify'>어린이집 구분</th>")
+				}else {
+					$('#crname').empty();
+					$('#classify').remove();;
+				}
+			}
+			
 		});//onload 끝	
 	</script>
     <div class="content-wrapper text-center margin-top0" style="background-image: url('${pageContext.request.contextPath}/assets/img/background.jpg');">

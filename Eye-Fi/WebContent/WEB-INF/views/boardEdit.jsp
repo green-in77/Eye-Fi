@@ -17,6 +17,7 @@
 	<link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet">
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.js"></script>
 	
+	<c:set var = "btype" value="${requestScope.btype}" />
 	<script type="text/javascript">
 		$(function(){
 			
@@ -72,7 +73,24 @@
 				let issubmit = board && subject && content;
 				
 				return issubmit;
-			})
+			});
+			
+			if(${btype} == 3){
+				var file = document.querySelector('#img');
+	    		
+	    	    file.onchange = function () { 
+	    	        var fileList = file.files ;
+	    	        
+	    	        // 읽기
+	    	        var reader = new FileReader();
+	    	        reader.readAsDataURL(fileList [0]);
+	    	
+	    	        //로드 한 후
+	    	        reader.onload = function  () {
+	    	            document.querySelector('#preview').src = reader.result;
+	    	        }; 
+	    	    }; 
+			};
 		});
 		
 	</script>
@@ -86,40 +104,60 @@
 				</div>
 			</div>
 			<c:set var="board" value="${requestScope.board}" />
-			<form name="bbs" action="boardEditOk.bdo" method="POST">
+			
+			<form name="bbs" action="boardEditOk.bdo" method="POST" enctype="multipart/form-data">
 				<div class="row">
 					<div class="col-md-2" style="text-align:center;">
 						<c:if test="${board.bcode != 1}">
 							<input type="checkbox" name="notice" value="true">&nbsp;&nbsp;공지사항
 						</c:if>
 					</div>
+					
 					<div class="col-md-5" style="text-align:center;">
 						<!-- 게시판 종류 선택 -->
 						<!-- 관리자의 경우 공지사항 게시판까지 선택가능 / 일반회원의 경우 공지사항 보이지 않음 -->
 						<select class="btn btn-primary" id="board" name="bcode">
 							<option value="">게시판 선택</option>
-						<c:forEach var="board" items="${requestScope.boardList}">
-							<c:choose>
-								<c:when test="${sessionScope.admin == 1}">
-									<option value="${board.bcode}" <c:if test="${board.bcode == requestScope.bcode}">selected</c:if>>${board.bname}</option>
-								</c:when>
-								<c:otherwise>
-									<c:choose>
-										<c:when test="${board.bcode == 1}">
-										</c:when>
-										<c:otherwise>
-											<option value="${board.bcode}" <c:if test="${board.bcode == requestScope.bcode}">selected</c:if>>${board.bname}</option>
-										</c:otherwise>
-									</c:choose>
-								</c:otherwise>
-							</c:choose>
-
-						</c:forEach>
+							
+							<c:forEach var="boardlist" items="${requestScope.boardList}">
+								<c:choose>
+									<c:when test="${btype == 3}">
+										<c:if test="${board.bcode == boardlist.bcode}">
+											<option value="${boardlist.bcode}" selected>${boardlist.bname}</option>
+										</c:if>
+									</c:when>
+									
+									<c:otherwise>
+										<c:choose>						
+									<c:when test="${sessionScope.admin == 1}">
+										<option value="${boardlist.bcode}" <c:if test="${boardlist.bcode == requestScope.bcode}">selected</c:if>>${boardlist.bname}</option>
+									</c:when>
+											
+									<c:otherwise>
+											
+										<c:choose>
+											<c:when test="${boardlist.bcode == 1}">
+											</c:when>
+													
+											<c:otherwise>
+												<option value="${boardlist.bcode}" <c:if test="${boardlist.bcode == requestScope.bcode}">selected</c:if>>${boardlist.bname}</option>
+											</c:otherwise>
+										</c:choose>
+												
+									</c:otherwise>	
+								</c:choose>
+									
+									</c:otherwise>
+								
+								</c:choose>
+								
+								
+							</c:forEach>
 
 						</select>
 					</div>
 					<div class="col-md-5" style="text-align:center;">
-						<!-- 말머리 선택 -->
+						<!-- 말머리 -->
 						<c:if test="${requestScope.bcode != 1}">
 							<span class="btn btn-primary" id="crname" name="classify">
 								${board.classify}
@@ -144,6 +182,12 @@
 										<tr>
 											<td colspan="2"><textarea rows="10" cols="60" name="content" id ="summernote">${board.content}</textarea></td>
 										</tr>
+										<c:if test="${requestScope.btype == 3}">
+											<tr>
+												<td width="20%"><img id="preview" src="board_img/${board.save_file}" width="100%" alt="미리보기" class="img" sizingMethod='scale'></td>
+												<td><input type="file" name='img' id='img' placeholder="Image" class="form-control"></td>
+											</tr>
+										</c:if>
 									</table>
 								</div>
 							</div>
@@ -151,6 +195,7 @@
 	
 						<div class="row">
 							<div class="col-md-12" style="text-align:center;">
+								<input type="hidden" name="arcode" value="${requestScope.arcode}">
 								<input type="hidden" name="userid" value="${sessionScope.userid}">
 								<input type="hidden" name="seq" value="${board.seq}">
 								<input type="submit" class="btn btn-primary" value="수정하기" id="writeOk">

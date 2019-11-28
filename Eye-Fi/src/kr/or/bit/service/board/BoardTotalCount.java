@@ -13,9 +13,18 @@ public class BoardTotalCount implements Action{
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
 		String bcode = request.getParameter("bcode");
+		String classify = request.getParameter("classify");
+		
+		//System.out.println(bcode + " / " + classify);
 		
 		BoardDao boarddao = new BoardDao();
-		int boardTotalCount = boarddao.boardTotalCount(Integer.parseInt(bcode));
+		int boardTotalCount = 0;
+		
+		if(classify == null || classify.equals("")) {
+			boardTotalCount = boarddao.boardTotalCount(Integer.parseInt(bcode));
+		}else {
+			boardTotalCount = boarddao.boardclassifyCount(classify);
+		}
 		
 		request.setAttribute("boardTotalCount", boardTotalCount);
 		

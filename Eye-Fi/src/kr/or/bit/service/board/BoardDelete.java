@@ -14,6 +14,9 @@ public class BoardDelete implements Action {
 		//1. 데이터 받기
 		String seq = request.getParameter("seq");
 		String bcode = request.getParameter("bcode");
+		String btype = request.getParameter("btype");
+		String arcode = request.getParameter("arcode");
+		
 		
 		//2. 데이터 확인
 		//System.out.println(seq + " / " + bcode);
@@ -22,7 +25,7 @@ public class BoardDelete implements Action {
 		int result = boarddao.boardDeleteOk(seq);
 		
 		String msg = "";
-		String url = "boardList.bdo?bcode="+bcode;
+		String url = "boardList.bdo?bcode="+bcode+"&btype="+btype+"&arcode="+arcode;
 		
 		if(result > 0 ) {
 			msg = "글이 삭제되었습니다.";

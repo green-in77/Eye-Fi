@@ -34,8 +34,15 @@ public class BoardListOk implements Action {
 		JSONArray boardlistJson = null;
 		
 		if( btype == 1 || btype == 3 ) {
-			List<Board> boardlist = boarddao.noticeboardList(Integer.parseInt(cp), Integer.parseInt(bcode));
-			boardlistJson = JSONArray.fromObject(boardlist);
+			if(classify == null || classify == "") {
+				List<Board> boardlist = boarddao.noticeboardList(Integer.parseInt(cp), Integer.parseInt(bcode));
+				boardlistJson = JSONArray.fromObject(boardlist);
+				
+			}else {
+				List<Board> boardlist = boarddao.noticeclassifyboardList(Integer.parseInt(cp), Integer.parseInt(bcode),classify);
+				boardlistJson = JSONArray.fromObject(boardlist);
+			}
+				
 		} else if( btype == 2) {
 			if(classify == null || classify == "") {
 				List<Reboard> boardlist = boarddao.boardList(Integer.parseInt(cp), Integer.parseInt(bcode));

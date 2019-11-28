@@ -22,6 +22,9 @@ import kr.or.bit.service.board.BoardTotalCount;
 import kr.or.bit.service.board.BoardWrite;
 import kr.or.bit.service.board.BoardWriteOk;
 import kr.or.bit.service.board.NoticeboardContent;
+import kr.or.bit.service.board.ReplyDelete;
+import kr.or.bit.service.board.ReplyList;
+import kr.or.bit.service.board.ReplyWrite;
 import kr.or.bit.service.board.Rewrite;
 import kr.or.bit.service.board.RewriteOk;
 
@@ -46,12 +49,12 @@ public class BoardFrontController extends HttpServlet {
 		ActionForward forward = null; //path
 		Action action = null; //action인터페이스를 사용하는 모든 자식객체(service)의 주소를 가질 수 있다.
 
-		if( url_Command.equals("/boardCreate.bdo")) {//기술미구현
+		if( url_Command.equals("/boardCreate.bdo")) {//완료
 			//게시판생성 화면
 			action = new BoardCreate();
 			forward = action.execute(request, response);
 			
-		}else if( url_Command.equals("/boardCreateOk.bdo")) {
+		}else if( url_Command.equals("/boardCreateOk.bdo")) {//완료
 			//게시판 생성 로직
 			action = new BoardCreateOk();
 			forward = action.execute(request, response);
@@ -75,6 +78,7 @@ public class BoardFrontController extends HttpServlet {
 			//공지게시판 페이징(비동기)
 			action = new BoardTotalCount();
 			forward = action.execute(request, response);
+			
 		}else if( url_Command.equals("/boardContent.bdo")) {//완료
 			//게시글 상세보기
 			action = new NoticeboardContent();
@@ -108,6 +112,21 @@ public class BoardFrontController extends HttpServlet {
 		}else if( url_Command.equals("/boardEditOk.bdo")) {
 			//수정하기
 			action = new BoardEditOk();
+			forward = action.execute(request, response);
+			
+		}else if( url_Command.equals("/replyWriteOk.bdo")) {
+			//댓글등록
+			action = new ReplyWrite();
+			forward = action.execute(request, response);
+			
+		}else if( url_Command.equals("/replyList.bdo")) {
+			//댓글리스트
+			action = new ReplyList();
+			forward = action.execute(request, response);
+			
+		}else if( url_Command.equals("/replyDelete.bdo")) {
+			//댓글삭제
+			action = new ReplyDelete();
 			forward = action.execute(request, response);
 			
 		}

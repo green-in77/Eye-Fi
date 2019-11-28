@@ -8,7 +8,7 @@
 <head>
 	<c:import url="../common/top.jsp" />
 	
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5d00399e8d45fb8607fd0eec1c06e2ce"></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5d00399e8d45fb8607fd0eec1c06e2ce&libraries=services"></script>
 	<c:set var="stcode" value="${requestScope.stcode}" />
 	<c:set var="arcode" value="${requestScope.arcode}" />
 	
@@ -40,21 +40,50 @@
 				
 				la = list.item.la;
 				lo = list.item.lo;
-				//console.log(la);
-				//console.log(lo);
+				
+				//주소로 좌표를 받기위해...
+				var coords;
 				
 				var container = document.getElementById('map');
+				
 				var options = {
-					center: new kakao.maps.LatLng(la, lo),
+					center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
 					level: 2
 				};
 				
 				var map = new kakao.maps.Map(container, options);
-				var marker = new kakao.maps.Marker({
-				    map: map,
-				    position: new kakao.maps.LatLng(la, lo),
-				    title : list.item.crname
-				});
+				
+				// 주소-좌표 변환 객체를 생성합니다
+				var geocoder = new kakao.maps.services.Geocoder();
+					
+				// 주소로 좌표를 검색합니다
+				geocoder.addressSearch(list.item.craddr, function(result, status) {
+
+					// 정상적으로 검색이 완료됐으면 
+					if (status === kakao.maps.services.Status.OK) {
+						
+						if( la == "" || lo == ""){
+							coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+						}else {
+							coords = new kakao.maps.LatLng(la, lo);
+						}
+						// 결과값으로 받은 위치를 마커로 표시합니다
+						var marker = new kakao.maps.Marker({
+							map: map,
+							position: coords
+						});
+	
+						// 인포윈도우로 장소에 대한 설명을 표시합니다
+						var infowindow = new kakao.maps.InfoWindow({
+							content: '<div style="width:150px;text-align:center;padding:6px 0;">'+list.item.crname+'</div>'
+						});
+						infowindow.open(map, marker);
+	
+						// 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+						map.setCenter(coords);
+					} 
+				});    
+						
 			},
 			error : function(xhr){
 				console.log(xhr.status);

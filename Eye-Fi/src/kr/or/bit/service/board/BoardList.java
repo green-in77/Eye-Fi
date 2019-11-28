@@ -18,6 +18,7 @@ public class BoardList implements Action {
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
 		//1.데이터 받기
 		String cp = request.getParameter("cp");
+		String btype = request.getParameter("btype");
 		String bcode = request.getParameter("bcode");
 		String arcode = request.getParameter("arcode");
 				
@@ -37,6 +38,7 @@ public class BoardList implements Action {
 		request.setAttribute("arcode", arcode);
 		request.setAttribute("cp", cp);
 		request.setAttribute("bcode", bcode);
+		request.setAttribute("btype", btype);
 		
 		ActionForward forward = new ActionForward();
 		forward.setPath("/WEB-INF/views/boardList.jsp");

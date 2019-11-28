@@ -71,11 +71,15 @@
 			$('#writeOk').click(function() {
 				let board = false;
 				let subject = false;
-				let centent = false;
+				let contentt = false;
+				let img = true;
 					
 				//console.log($('#board').val());
 				//console.log($('#subject').val());
 				//console.log($('#summernote').val());
+				//console.log(${btype});
+				//console.log($('#img').val());
+				
 				
 				if($('#board').val() == ""){
 					alert("게시판을 선택하세요.");
@@ -92,11 +96,19 @@
 				if($('#summernote').val() == ""){
 					alert("내용을 입력하세요.");
 				}else {
-					centent = true;
+					content = true;
 				}
 				
-				let issubmit = board && subject && content;
 				
+				if(${btype} == 3){
+					if($('#img').val() == ""){
+						alert("사진을 등록하세요.");
+						img = false;
+					}
+				}
+				
+				let issubmit = board && subject && content && img;
+				//console.log(issubmit);
 				return issubmit;
 			})
 			

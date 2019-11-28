@@ -13,16 +13,14 @@
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 		
 	<script type="text/javascript">
-		$(function(){
-			$('#chart').hide();
-			
+		$(function(){			
 			$.ajax({
 				url : "sigun.ch",
 				dataType: "JSON",
 				type : "post",
 				success : function(list){
 					
-					var sigunlist = '<option value="">지역을 선택해주세요.</option>';
+					var sigunlist = '<option value="">지역 선택</option>';
 					
 					$.each(list,function(index,sigun){
 						sigunlist += '<option value="'+sigun.arcode+'">'+sigun.sigunname+'</option>'
@@ -77,6 +75,7 @@
 								};
 								
 								var color = Chart.helpers.color;
+								
 								var barChartData = {
 										labels: ['총 어린이집', '운영중인 어린이집', '교사', '현원', 'CCTV'],
 										datasets: [{
@@ -94,7 +93,9 @@
 										}]
 
 								};
+								
 								var ctx = document.getElementById('canvas').getContext('2d');
+								
 								window.myBar = new Chart(ctx, {
 									type: 'bar',
 									data: barChartData,
@@ -119,9 +120,7 @@
 					console.log(xhr.status);
 				}
 			}); //sigun ajax 끝
-			
-			
-			
+
 		});//onload 끝
 	</script>
     <div class="content-wrapper text-center margin-top0" style="background-image: url('${pageContext.request.contextPath}/assets/img/background.jpg');">
@@ -142,7 +141,6 @@
 	                            <select id = "sigunname">
 	                            	
                                 </select>
-                                <button id="chart">차트보기</button>
 							</div>
 						</div>
 					</div>

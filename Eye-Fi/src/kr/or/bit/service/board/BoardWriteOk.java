@@ -51,7 +51,7 @@ public class BoardWriteOk implements Action{
 			//2. 데이터 확인
 			System.out.println(userid +"/"+ subject +"/"+ content +"/"+ classify +"/"+ notice +"/ bcode: "+ bcode);
 			
-			if( classify==null ) { //|| classify.equals("") || classify == null
+			if( classify==null || classify.equals("")) { //|| classify.equals("") || classify == null
 				classify = "전체";
 			}
 			
@@ -117,14 +117,14 @@ public class BoardWriteOk implements Action{
 			
 			if(result > 0 ) {
 				msg = "글이 등록되었습니다.";
-				url = "boardList.bdo?bcode="+bcode+"&arcode="+arcode;
+				url = "boardList.bdo?bcode="+bcode+"&arcode="+arcode+"&btype="+btype;
 			}else {		
 				msg = "글쓰기가 실패하였습니다. 다시 작성 부탁드립니다.";
-				url = "boardWrite.bdo";
+				url = "boardWrite.bdo?bcode="+bcode+"&arcode="+arcode+"&btype="+btype;
 			}
 			
 			request.setAttribute("msg", msg);
-			request.setAttribute("url", url);
+			request.setAttribute("url", url);			
 	
 		} catch(Exception e) {
 			System.out.println("multi : " + e.getMessage());

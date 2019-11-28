@@ -100,6 +100,8 @@
 	
 						<div class="row">
 							<div class="col-md-12" style="text-align:center;">
+								<input type="hidden" name="arcode" value="${requestScope.arcode}">							
+								<input type="hidden" name="btype" value="${requestScope.btype}">
 								<input type="hidden" name="classify" value="${requestScope.classify}">
 								<input type="hidden" name="seq" value="${requestScope.seq}">
 								<input type="hidden" name="userid" value="${sessionScope.userid}">

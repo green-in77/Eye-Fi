@@ -20,6 +20,9 @@ public class RewriteOk implements Action{
 		String bcode = request.getParameter("bcode");
 		String seq = request.getParameter("seq");
 		String classify = request.getParameter("classify");
+		String btype = request.getParameter("btype");
+		String arcode = request.getParameter("arcode");
+		
 		
 		//2. 데이터 확인
 		//System.out.println(userid +"/"+ subject +"/"+ content +"/ bcode: "+ bcode + "/"+seq + "/" + classify);
@@ -43,7 +46,7 @@ public class RewriteOk implements Action{
 		
 		if(result > 0 ) {
 			msg = "답글이 등록되었습니다.";
-			url = "boardList.bdo?bcode="+bcode;
+			url = "boardList.bdo?bcode="+bcode+"&btype="+btype+"&arcode="+arcode;
 		}else {		
 			msg = "글쓰기가 실패하였습니다. 다시 작성 부탁드립니다.";
 			url = "boardWrite.bdo";

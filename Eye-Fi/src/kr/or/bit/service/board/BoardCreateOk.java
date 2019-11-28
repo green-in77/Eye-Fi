@@ -20,7 +20,7 @@ public class BoardCreateOk implements Action {
 		String ccode = request.getParameter("ccode");
 		String cname = request.getParameter("cname");
 		
-		System.out.println("bname="+bname+" btype="+btype+" ccode="+ccode + " cname="+cname);
+		//System.out.println("bname="+bname+" btype="+btype+" ccode="+ccode + " cname="+cname);
 		
 		Board_List boardlist = new Board_List();
 		boardlist.setBname(bname);

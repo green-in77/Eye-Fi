@@ -123,7 +123,8 @@
 			
 			search = $('#search').val()
 			searchtag = $('#searchtag').val();
-			list(url,1,search,searchtag);
+			cp=1;
+			list(url,cp,search,searchtag);
 			totalcount("memberTotalCount.do",search,searchtag);
 			
 		})
@@ -249,6 +250,9 @@
 						
 						//취소버튼 클릭시
 						$('.cancel').click(function() {
+							//console.log("cp : " + cp);
+							//console.log("search : " +search);
+							//console.log("searchtag : " + searchtag);
 							list(url,cp,search,searchtag);
 							totalcount("memberTotalCount.do",search,searchtag);
 						});
