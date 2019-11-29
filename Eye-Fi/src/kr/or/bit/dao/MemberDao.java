@@ -274,16 +274,16 @@ public class MemberDao {
 		try {
 			String sql_selectAll = "";
 
-			sql_selectAll ="select * from (select rownum rn, m.userid, m.userpw, m.email, m.admin, m.code, a.STATUS from member m join active a on m.CODE = a.CODE where userid like ? or email like ? and rownum <= ?) where rn >= ?";
+			sql_selectAll ="select * from (select rownum rn, m.userid, m.userpw, m.email, m.admin, m.code, a.STATUS from member m join active a on m.CODE = a.CODE where rownum <= ? and userid like ? or email like ?) where rn >= ?";
 			
 			pstmt = conn.prepareStatement(sql_selectAll);
-			pstmt.setString(1, "%"+search+"%");
 			pstmt.setString(2, "%"+search+"%");
+			pstmt.setString(3, "%"+search+"%");
 			
 			int start = cp * 4 - (4-1); //1 * 5 - (5 - 1) >> 1
 			int end = cp * 4; // 1 * 5 >> 5
 				
-			pstmt.setInt(3, end);
+			pstmt.setInt(1, end);
 			pstmt.setInt(4, start);
 						
 			rs = pstmt.executeQuery();
@@ -416,7 +416,7 @@ public class MemberDao {
 		try {
 			String sql_count = "select count(userid) from member where userid like ? or email like ?";
 			pstmt = conn.prepareStatement(sql_count);
-			System.out.println(search);
+			//System.out.println(search);
 			
 			pstmt.setString(1, "%"+search+"%");
 			pstmt.setString(2, "%"+search+"%");
@@ -425,7 +425,7 @@ public class MemberDao {
 			
 			if(rs.next()) {
 				totalcount = rs.getInt(1);
-				System.out.println(totalcount);
+				//System.out.println(totalcount);
 			}
 		} catch(Exception e) {
 			System.out.println("membetTotalCount : " + e.getMessage());
