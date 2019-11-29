@@ -199,7 +199,7 @@
 								<input type="hidden" name="userid" value="${sessionScope.userid}">
 								<input type="hidden" name="seq" value="${board.seq}">
 								<input type="submit" class="btn btn-primary" value="수정하기" id="writeOk">
-								<input type="reset" class="btn btn-primary" value="다시쓰기">
+								<a href="boardContent.bdo?bcode=${requestScope.bcode}&arcode=${requestScope.arcode}&btype=${requestScope.btype}&cp=${requestScope.cp}&seq=${board.seq}" class="btn btn-primary">취소</a>
 							</div>
 						</div>
 						

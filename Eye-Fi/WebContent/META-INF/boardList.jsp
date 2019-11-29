@@ -114,7 +114,7 @@
 									boardlist += '<tr>'
 													+'<td>'+board.classify+'</td>'
 													+'<td style="text-align:left;">'
-													+'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'&btype='+btype+'&arcode='+arcode+'"><img src="board_img/'+board.save_file+'" style="max-width: 30rem;height:150px;" class="img-fluid rounded-circle shadow">&nbsp;&nbsp;'+board.subject+'</a></td>'
+													+'<a href="boardContent.bdo?bcode='+bcode+'&cp='+cp+'&seq='+board.seq+'&btype='+btype+'&arcode='+arcode+'">'+board.subject+'</td>'
 													+'<td>'+board.userid+'</td>'
 													+'<td>'+board.logtime+'</td>'
 													+'<td>'+board.hit+'</td>'

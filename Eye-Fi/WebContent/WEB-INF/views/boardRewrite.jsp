@@ -91,7 +91,7 @@
 											<td><input type="text" class="form-control" id="subject" name="subject"/ value="[RE]${requestScope.subject}"></td>
 										</tr>
 										<tr>
-											<td colspan="2"><textarea rows="10" cols="60" name="content" id ="summernote">원본글<br>${requestScope.content}<hr><br><br></textarea></td>
+											<td colspan="2"><textarea rows="10" cols="60" name="content" id ="summernote"><hr>${requestScope.content}<hr></textarea></td>
 										</tr>
 									</table>
 								</div>
@@ -107,7 +107,7 @@
 								<input type="hidden" name="userid" value="${sessionScope.userid}">
 								<input type="hidden" name="bcode" value="${requestScope.bcode}">
 								<input type="submit" class="btn btn-primary" value="답글쓰기" id="writeOk">
-								<input type="reset" class="btn btn-primary" value="다시쓰기">
+								<a href="boardContent.bdo?bcode=${requestScope.bcode}&arcode=${requestScope.arcode}&btype=${requestScope.btype}&cp=${requestScope.cp}&seq=${requestScope.seq}" class="btn btn-primary">취소</a>
 							</div>
 						</div>
 						

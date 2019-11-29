@@ -174,10 +174,10 @@
 							console.log(data.trim());
 							if(data.trim() == "true"){
 								alert("수정이 완료되었습니다.");
+
 							}else {
 								alert("수정이 실패했습니다.");
 							}
-							window.location.href = "${pageContext.request.contextPath}/index.jsp";
 						},
 						error : function(xhr){
 							console.log(xhr.status);
@@ -371,7 +371,7 @@
 		</div>
 	</div>
 	
-	<!-- modal -->
+	<!-- 정보수정 -->
 	<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
 		<div class="modal-dialog2">
 			<div class="modal-content">

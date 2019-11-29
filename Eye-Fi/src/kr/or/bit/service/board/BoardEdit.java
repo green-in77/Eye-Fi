@@ -44,7 +44,8 @@ public class BoardEdit implements Action {
 			Board board = boarddao.boardContent(Integer.parseInt(seq));
 			request.setAttribute("board", board);
 		}
-
+		
+		
 		request.setAttribute("bcode", bcode);
 		request.setAttribute("cp", cp);
 		request.setAttribute("btype", btype);

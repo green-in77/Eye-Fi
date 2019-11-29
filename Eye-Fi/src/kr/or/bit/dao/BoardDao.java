@@ -426,13 +426,13 @@ public class BoardDao {
 			pstmt = conn.prepareStatement(sql_selectAll);
 			
 			pstmt.setInt(1, bcode);
-			if ( cp != -1) {
-				int start = cp * 4 - (4-1); //1 * 5 - (5 - 1) >> 1
-				int end = cp * 4; // 1 * 5 >> 5
+
+			int start = cp * 4 - (4-1); //1 * 5 - (5 - 1) >> 1
+			int end = cp * 4; // 1 * 5 >> 5
 				
-				pstmt.setInt(2, end);
-				pstmt.setInt(3, start);
-			}			
+			pstmt.setInt(2, end);
+			pstmt.setInt(3, start);
+						
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()){
@@ -660,6 +660,117 @@ public class BoardDao {
 		return reboardList;
 	}
 	
+	//앨범 게시판 리스트 조회
+	public List<Album> albumboardList(int cp, int bcode){
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Album> albumlist = new ArrayList<Album>();
+		
+		try {
+			String sql = "select * from (select rownum rn, a.* from (SELECT * FROM board b join album a on b.seq = a.seq ORDER BY logtime DESC) a where bcode = ? and del=0 and rownum <= ?) where rn >= ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bcode);
+			
+			int start = cp * 4 - (4-1); //1 * 5 - (5 - 1) >> 1
+			int end = cp * 4; // 1 * 5 >> 5
+				
+			pstmt.setInt(2, end);
+			pstmt.setInt(3, start);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Album album = new Album();
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+	            java.util.Date date = sdf.parse(rs.getString("logtime"));
+	            Date logtime = new Date(date.getTime());
+				
+	            album.setSeq(rs.getInt("seq"));
+	            album.setUserid(rs.getString("userid"));
+	            album.setSubject(rs.getString("subject"));
+	            album.setContent(rs.getString("content"));
+	            album.setHit(rs.getInt("hit"));
+	            album.setLogtime(logtime);
+	            album.setClassify(rs.getString("classify"));
+	            album.setDel(rs.getString("del"));
+	            album.setNotice(rs.getString("notice"));
+	            album.setBcode(rs.getInt("bcode"));
+	            
+	            album.setOrign_file(rs.getString("orign_file"));
+	            album.setSave_file(rs.getString("save_file"));
+	            
+	            albumlist.add(album);
+			}
+			
+		}catch (Exception e) {
+			System.out.println("content : " + e.getMessage());
+		}finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(rs);
+			DB_Close.close(conn);
+		}
+		return albumlist;
+	}
+	
+	//앨범게시판 어린이집 선택 조회
+	public List<Album> classifyalbumboardList(int cp, int bcode, String classify){
+		Connection conn = ConnectionHelper.getConnection("oracle");
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Album> albumlist = new ArrayList<Album>();
+		
+		try {
+			String sql = "select * from (select rownum rn, a.* from (SELECT * FROM board b join album a on b.seq = a.seq ORDER BY logtime DESC) a where bcode = ? and del=0 and classify=? and rownum <= ?) where rn >= ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bcode);
+			pstmt.setString(2, classify);
+			
+			int start = cp * 4 - (4-1); //1 * 5 - (5 - 1) >> 1
+			int end = cp * 4; // 1 * 5 >> 5
+				
+			pstmt.setInt(3, end);
+			pstmt.setInt(4, start);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Album album = new Album();
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+	            java.util.Date date = sdf.parse(rs.getString("logtime"));
+	            Date logtime = new Date(date.getTime());
+				
+	            album.setSeq(rs.getInt("seq"));
+	            album.setUserid(rs.getString("userid"));
+	            album.setSubject(rs.getString("subject"));
+	            album.setContent(rs.getString("content"));
+	            album.setHit(rs.getInt("hit"));
+	            album.setLogtime(logtime);
+	            album.setClassify(rs.getString("classify"));
+	            album.setDel(rs.getString("del"));
+	            album.setNotice(rs.getString("notice"));
+	            album.setBcode(rs.getInt("bcode"));
+	            
+	            album.setOrign_file(rs.getString("orign_file"));
+	            album.setSave_file(rs.getString("save_file"));
+	            
+	            albumlist.add(album);
+			}
+			
+		}catch (Exception e) {
+			System.out.println("content : " + e.getMessage());
+		}finally {
+			DB_Close.close(pstmt);
+			DB_Close.close(rs);
+			DB_Close.close(conn);
+		}
+		return albumlist;
+	}
+	
 	//게시판 총 건수 조회
 	public int boardTotalCount(int bcode) {
 		Connection conn = ConnectionHelper.getConnection("oracle");
@@ -688,16 +799,17 @@ public class BoardDao {
 	}
 	
 	//게시판 어린이집 건수 조회
-	public int boardclassifyCount(String classify) {
+	public int boardclassifyCount(int bcode, String classify) {
 		Connection conn = ConnectionHelper.getConnection("oracle");
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		int totalcount = 0;
 		
 		try {
-			String sql_count = "select count(seq) from board where classify = ? and del=0";
+			String sql_count = "select count(seq) from board where bcode=? and classify = ? and del=0";
 			pstmt = conn.prepareStatement(sql_count);
-			pstmt.setString(1, classify);
+			pstmt.setInt(1, bcode);
+			pstmt.setString(2, classify);
 			
 			rs = pstmt.executeQuery();
 			

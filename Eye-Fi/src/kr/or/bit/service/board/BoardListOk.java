@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import kr.or.bit.action.Action;
 import kr.or.bit.action.ActionForward;
 import kr.or.bit.dao.BoardDao;
+import kr.or.bit.dto.board.Album;
 import kr.or.bit.dto.board.Board;
 import kr.or.bit.dto.board.Reboard;
 import net.sf.json.JSONArray;
@@ -33,17 +34,12 @@ public class BoardListOk implements Action {
 		int btype = boarddao.btypeSel(Integer.parseInt(bcode));
 		JSONArray boardlistJson = null;
 		
-		if( btype == 1 || btype == 3 ) {
-			if(classify == null || classify == "") {
-				List<Board> boardlist = boarddao.noticeboardList(Integer.parseInt(cp), Integer.parseInt(bcode));
-				boardlistJson = JSONArray.fromObject(boardlist);
-				
-			}else {
-				List<Board> boardlist = boarddao.noticeclassifyboardList(Integer.parseInt(cp), Integer.parseInt(bcode),classify);
-				boardlistJson = JSONArray.fromObject(boardlist);
-			}
-				
+		if( btype == 1) {
+			List<Board> boardlist = boarddao.noticeboardList(Integer.parseInt(cp), Integer.parseInt(bcode));
+			boardlistJson = JSONArray.fromObject(boardlist);
+	
 		} else if( btype == 2) {
+			
 			if(classify == null || classify == "") {
 				List<Reboard> boardlist = boarddao.boardList(Integer.parseInt(cp), Integer.parseInt(bcode));
 				//System.out.println(boardlist);
@@ -52,13 +48,24 @@ public class BoardListOk implements Action {
 				List<Reboard> boardlist = boarddao.classifyboardList(Integer.parseInt(cp), Integer.parseInt(bcode),classify);
 				boardlistJson = JSONArray.fromObject(boardlist);
 			}
+			
+		}else if( btype == 3 ) {
+			
+			if(classify == null || classify == "") {
+				List<Album> boardlist = boarddao.albumboardList(Integer.parseInt(cp), Integer.parseInt(bcode));
+				boardlistJson = JSONArray.fromObject(boardlist);
+				
+			}else {
+				List<Album> boardlist = boarddao.classifyalbumboardList(Integer.parseInt(cp), Integer.parseInt(bcode),classify);
+				boardlistJson = JSONArray.fromObject(boardlist);
+			}
 		}
 		
 		request.setAttribute("boardlist", boardlistJson);
 		request.setAttribute("cp", cp);
 		
 		ActionForward forward = new ActionForward();
-		forward.setPath("/WEB-INF/boardAjaxJsp/noticeboardList.jsp");
+		forward.setPath("/WEB-INF/boardAjaxJsp/boardList.jsp");
 		
 		return forward;
 	}

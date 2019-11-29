@@ -21,7 +21,7 @@ import kr.or.bit.service.board.BoardListOk;
 import kr.or.bit.service.board.BoardTotalCount;
 import kr.or.bit.service.board.BoardWrite;
 import kr.or.bit.service.board.BoardWriteOk;
-import kr.or.bit.service.board.NoticeboardContent;
+import kr.or.bit.service.board.BoardContent;
 import kr.or.bit.service.board.ReplyDelete;
 import kr.or.bit.service.board.ReplyList;
 import kr.or.bit.service.board.ReplyWrite;
@@ -81,7 +81,7 @@ public class BoardFrontController extends HttpServlet {
 			
 		}else if( url_Command.equals("/boardContent.bdo")) {//완료
 			//게시글 상세보기
-			action = new NoticeboardContent();
+			action = new BoardContent();
 			forward = action.execute(request, response);
 			
 		}else if( url_Command.equals("/boardList.bdo")) {

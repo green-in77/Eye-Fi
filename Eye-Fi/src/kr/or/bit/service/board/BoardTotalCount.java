@@ -23,7 +23,7 @@ public class BoardTotalCount implements Action{
 		if(classify == null || classify.equals("")) {
 			boardTotalCount = boarddao.boardTotalCount(Integer.parseInt(bcode));
 		}else {
-			boardTotalCount = boarddao.boardclassifyCount(classify);
+			boardTotalCount = boarddao.boardclassifyCount(Integer.parseInt(bcode),classify);
 		}
 		
 		request.setAttribute("boardTotalCount", boardTotalCount);

@@ -9,7 +9,7 @@ import kr.or.bit.dao.BoardDao;
 import kr.or.bit.dto.board.Album;
 import kr.or.bit.dto.board.Board;
 
-public class NoticeboardContent implements Action{
+public class BoardContent implements Action{
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) {
@@ -21,11 +21,11 @@ public class NoticeboardContent implements Action{
 		String arcode = request.getParameter("arcode");
 		
 		//2. 데이터 확인
-		System.out.println("bcode : " + bcode + "/seq : " + seq + "/cp : "+cp + " / arcode : " + arcode);
+		//System.out.println("bcode : " + bcode + "/seq : " + seq + "/cp : "+cp + " / arcode : " + arcode);
 		
 		String url = "";
 		if( seq == null || seq.equals("")){
-			url="noticeboardList.bdo?bcode="+bcode; //돌아갈 경우 왔던 게시판의 1페이지로..
+			url="boardList.bdo?bcode="+bcode+"&btype="+btype+"&arcode="+arcode; //돌아갈 경우 왔던 게시판의 1페이지로..
 			
 		}else {
 			BoardDao boarddao = new BoardDao();
@@ -43,7 +43,7 @@ public class NoticeboardContent implements Action{
 			request.setAttribute("btype", btype);
 			request.setAttribute("cp", cp);
 			
-			url="/WEB-INF/views/noticeboardContent.jsp";
+			url="/WEB-INF/views/boardContent.jsp";
 		}
 		
 		ActionForward forward = new ActionForward();

@@ -22,7 +22,7 @@
 	
 	<script type="text/javascript">
 		$(function(){
-			
+			console.log('${arcode}');
 			//말머리 ajax
 			/* $.ajax({
 				url : "http://api.childcare.go.kr/mediate/rest/cpmsapi030/cpmsapi030/request",
@@ -221,7 +221,9 @@
 								<input type="hidden" name="arcode" value="${arcode}">
 								<input type="hidden" name="userid" value="${sessionScope.userid}">
 								<input type="submit" class="btn btn-primary" value="글쓰기" id="writeOk">
-								<input type="reset" class="btn btn-primary" value="다시쓰기">
+								
+								<a href="boardList.bdo?bcode=${requestScope.bcode}&arcode=${requestScope.arcode}&btype=${requestScope.btype}" class="btn btn-primary">목록가기</a>
+							
 							</div>
 						</div>
 						
