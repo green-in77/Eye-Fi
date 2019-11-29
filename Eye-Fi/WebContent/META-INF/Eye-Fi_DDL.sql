@@ -1,3 +1,5 @@
+DB ID : web / PW : 1004
+
 /* 회원 */
 DROP TABLE MEMBER 
 	CASCADE CONSTRAINTS;
@@ -66,62 +68,7 @@ ALTER TABLE MEMBER
 		PRIMARY KEY (
 			userid
 		);
-		
-/* 활성화코드 */
-CREATE TABLE ACTIVE (
-	code NUMBER NOT NULL, /* 코드 */
-	status VARCHAR2(20) NOT NULL /* 회원상태*/
-);
 
-COMMENT ON TABLE ACTIVE IS '활성화코드';
-
-COMMENT ON COLUMN ACTIVE.code IS '코드';
-
-COMMENT ON COLUMN ACTIVE.status IS '회원상태';
-
-CREATE UNIQUE INDEX PK_ACTIVE
-	ON ACTIVE (
-		code ASC
-	);
-
-ALTER TABLE ACTIVE
-	ADD
-		CONSTRAINT PK_ACTIVE
-		PRIMARY KEY (
-			code
-		);
-
-ALTER TABLE MEMBER
-	ADD
-		CONSTRAINT FK_ACTIVE_TO_MEMBER
-		FOREIGN KEY (
-			code
-		)
-		REFERENCES ACTIVE (
-			code
-		);
-
-//활성화 테이블 기초
-insert into ACTIVE values (1,'활동');
-insert into ACTIVE values (2,'정지');
-insert into ACTIVE values (3,'탈퇴');		
-		
-//초기 관리자 생성
-insert into member (userid, userpw, email, admin, code) values('admin', 1004, 'eyefi1920@gmail.com',1,1);
-commit
-
-//회원테스트 데이터
-insert into member (userid, userpw, email, admin, code) values('admin', 1004, 'eyefi1920@gmail.com',1,1);
-insert into member (userid, userpw, email, admin, code) values('nunu', 1004, 'eyefi1920@gmail.com',0,1);
-insert into member (userid, userpw, email, admin, code) values('nene', 1004, 'eyefi1920@gmail.com',0,1);
-insert into member (userid, userpw, email, admin, code) values('papa', 1004, 'eyefi1920@gmail.com',0,1);
-insert into member (userid, userpw, email, admin, code) values('baby', 1004, 'eyefi1920@gmail.com',0,1);
-insert into member (userid, userpw, email, admin, code) values('vuvu', 1004, 'eyefi1920@gmail.com',0,1);
-insert into member (userid, userpw, email, admin, code) values('kiki', 1004, 'eyefi1920@gmail.com',0,1);
-insert into member (userid, userpw, email, admin, code) values('gugu', 1004, 'eyefi1920@gmail.com',0,1);
-commit;
-----------------------------------------------------------------------------------------------------------------------------------
-		
 /* 게시판 */
 CREATE TABLE BOARD (
 	seq NUMBER NOT NULL, /* 글번호 */
@@ -291,8 +238,7 @@ CREATE TABLE REBOARD (
 	refer NUMBER NOT NULL, /* 그룹번호 */
 	depth NUMBER NOT NULL, /* 들여쓰기 */
 	step NUMBER NOT NULL, /* 답변정렬 */
-	pseq NUMBER NOT NULL, /* 원글번호 */
-	rebdel NUMBER DEFAULT 0 NOT NULL /* 삭제 */
+	pseq NUMBER NOT NULL /* 원글번호 */
 );
 
 COMMENT ON TABLE REBOARD IS '답글';
@@ -309,8 +255,6 @@ COMMENT ON COLUMN REBOARD.step IS '답변정렬';
 
 COMMENT ON COLUMN REBOARD.pseq IS '원글번호';
 
-COMMENT ON COLUMN REBOARD.rebdel IS '삭제';
-
 CREATE UNIQUE INDEX PK_REBOARD
 	ON REBOARD (
 		COL ASC
@@ -322,7 +266,7 @@ ALTER TABLE REBOARD
 		PRIMARY KEY (
 			COL
 		);
-		
+
 /* 앨범 */
 CREATE TABLE ALBUM (
 	aseq NUMBER NOT NULL, /* 앨범식별번호 */
@@ -351,6 +295,40 @@ ALTER TABLE ALBUM
 		CONSTRAINT PK_ALBUM
 		PRIMARY KEY (
 			aseq
+		);
+
+/* 활성화코드 */
+CREATE TABLE ACTIVE (
+	code NUMBER NOT NULL, /* 코드 */
+	status VARCHAR2(20) NOT NULL /* 회원상태 */
+);
+
+COMMENT ON TABLE ACTIVE IS '활성화코드';
+
+COMMENT ON COLUMN ACTIVE.code IS '코드';
+
+COMMENT ON COLUMN ACTIVE.status IS '회원상태';
+
+CREATE UNIQUE INDEX PK_ACTIVE
+	ON ACTIVE (
+		code ASC
+	);
+
+ALTER TABLE ACTIVE
+	ADD
+		CONSTRAINT PK_ACTIVE
+		PRIMARY KEY (
+			code
+		);
+
+ALTER TABLE MEMBER
+	ADD
+		CONSTRAINT FK_ACTIVE_TO_MEMBER
+		FOREIGN KEY (
+			code
+		)
+		REFERENCES ACTIVE (
+			code
 		);
 
 ALTER TABLE BOARD
@@ -422,21 +400,25 @@ ALTER TABLE ALBUM
 		REFERENCES BOARD (
 			seq
 		);
-//게시판 리스트 시퀀스 생성
+
+
+/*게시판 리스트 시퀀스 생성*/
 create sequence blist_seq
 start with 1 increment by 1 nocache;
-		
-//게시판 타입
-insert into board_type(btype, btype_name) values(1, '공지사항');
-insert into board_type(btype, btype_name) values(2, '게시판');
-insert into board_type(btype, btype_name) values(3, '앨범게시판');
-commit;
 
-//카테고리
-insert into category(ccode, cname) values(0, '전체');
-insert into category(ccode, cname) values(11260, '중랑구');
-commit;
+/*게시판 시퀀스 생성*/
+create sequence board_seq
+start with 1 increment by 1 nocache;
 
-//게시판
-insert into board_list(bcode, bname, btype, ccode) values(blist_seq.nextval, '전체 공지사항', 1, 0);
-commit;
+/*답글 시퀀스 생성*/
+create sequence reboard_seq
+start with 1 increment by 1 nocache;
+
+/*앨범 시퀀스 생성*/
+create sequence album_seq
+start with 1 increment by 1 nocache;
+
+/*댓글 시퀀스 생성*/
+create sequence reply_seq
+start with 1 increment by 1 nocache;
+

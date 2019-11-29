@@ -1,52 +1,102 @@
 WebContent - index.jsp  : 메인
 
 		   - WEB-INF	: 보안폴더		   
-		   			- chartAjax : 비동기 처리시 data 받는 page
+		   			- boardAjaxJsp  : 게시판 비동기 처리시 data 받는 page
+		   				- boardList.jsp 	  : 게시판 리스트 data
+		   				- boardTotalCount.jsp : 페이징을 위한 게시글 수 data
+		   				- reply.jsp			  : 댓글등록 data 
+		   				- replyList.jsp		  : 댓글리스트 data 
 		   				
+		   			- childAjasJsp  : OpenAPI 비동기 처리시 data 받는 page
+		   				- child.jsp : 어린이집 OpenAPI data
+		   				- sigun.jsp : 시군구 OpenAPI data
+		   				
+		   			- memberAjasJsp : 회원 비동기 처리시 data 받는 page
+		   				- code.jsp 			   : 활성화코드 리스트 data
+		   				- idCheck.jsp		   : 아이디중복체크 data
+		   				- memberEdit.jsp	   : 회원정보수정 data
+		   				- memberList.jsp 	   : 회원리스트 data
+		   				- memberSelectId.jsp   : 회원1명ID 조회 data (회원이 본인정보 수정할 때 필요)
+		   				- memberTotalCount.jsp : 페이징을 위한 회원 수 data
 		   				
 					- common : include 되는 page
-						- admin.jsp : 관리자가 아니면 화면에 접근 불가
+						- admin.jsp  : 관리자가 아니면 화면에 접근 불가
 						- member.jsp : 회원이 아니면 화면에 접근 불가
-						- top.jsp : 상단
+						- top.jsp 	 : 상단
 						- bottom.jsp : 바닥
 						
+						
 					- lib : 라이브러리
-						JSTL, DB, Json, smtp
+						JSTL, DB, Json, mail, Xml->Json, Fileupload
 						
 					- views : UI 페이지
-						- 
+						- childList.jsp 	: 어린이집 리스트 화면
+						- childContent.jsp  : 어린이집 상세보기 화면
+						- childChart.jsp 	: 어린이집 차트 화면
+						
+						- boardCreate.jsp   : 관리자 게시판 생성 화면
+						- boardList.jsp 	: 게시판 리스트 화면
+						- boardWrite.jsp 	: 게시판 글쓰기 화면
+						- boardContent.jsp  : 게시판 글 상세보기 화면
+						- boardEdit.jsp		: 게시글 글 수정 화면						
+						- boardRewrite.jsp  : 게시판 답글쓰기 화면
+						
+						- memberList.jsp : 회원리스트 화면
+						
+						- emailCheck.jsp : 이메일 인증 화면
 					
 					- process : 처리하는 jsp
-						- redirect.jsp : 화면이동처리
-						- UsingConnection.jsp : DB연결 확인페이지
+						- redirect.jsp 		  : 화면이동처리
+						- UsingConnection.jsp : DB연결 확인페이지(테스트 후 보안폴더로 이동)
 
 ---------------------------------------------------------------------------------------------
+
 Java Resources
 	src
-		kr.or.bit.action
-			Action.java : 인터페이스 : service에서 구현
-			ActionForward.java : 이동path 를 저장할 객체
+		- kr.or.bit.action
+			- Action.java 		 : 인터페이스 : service에서 구현
+			- ActionForward.java : 이동path 를 저장할 객체
 		
-		kr.or.bit.controller
-			FrontController.java : URI 방식으로 요청을 파악해 service 호출
+		- kr.or.bit.controller
+			- BoardFrontController.java  : 게시판
+			- ChildFrontController.java  : 어린이집
+			- MemberFrontController.java : 회원
 		
-		kr.or.bit.dao
-			Memberdao.java : 회원 DB처리
+		- kr.or.bit.dao
+			- BoardDao.java  : 게시판 DB처리
+			- Memberdao.java : 회원 DB처리
 			
-		kr.or.bit.dto
-			Member.java : 회원 데이터를 담을 객체
+		- kr.or.bit.dto.board
+			- Album.java 	  : 앨범게시판
+			- Board_List.java : 게시판 리스트
+			- Board_Type.java : 게시판 타입
+			- Board.java 	  : 일반게시판
+			- Category.java   : 카테고리
+			- Reboard.java 	  : 계층형게시판
+			- Reply.java 	  : 댓글
+		
+		- kr.or.bit.dto.member
+			- Active.java : 활성화코드
+			- Member.java : 회원 데이터를 담을 객체
 			
-		kr.or.bit.filter
-			EncodingFilter.java : 한글화 filter
+		- kr.or.bit.filter
+			- EncodingFilter.java : 한글화 filter
 
-		kr.or.bit.service
+		- kr.or.bit.service.board
+			
+		
+		- kr.or.bit.service.child
+			- Child.java 		: 어린이집 OpenAPI 크로스도메인
+			- ChildContent.java : 어린이집 상세보기
+			- Sidoname.java 	: 시군구 OpenAPI 크로스도메인 
+			
+		- kr.or.bit.service.member	
 			Login.java : Login 처리
 			Logout.java : Logout 처리
 			
 			Join.java : 회원 가입 처리
 			
-			
-		kr.or.bit.utils
-			ConnectionHelper.java : Connection pool
-			DB_Close.java : DB사용자원 close
+		- kr.or.bit.utils
+			- ConnectionHelper.java : Connection pool
+			- DB_Close.java : DB사용자원 close
 			
